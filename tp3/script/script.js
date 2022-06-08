@@ -11,7 +11,7 @@ class Sagas {
         this.autor = autor
         this.anioPrimerLibro = anioPrimerLibro
     }
-    // aca van los metodos, no se me ocurre ninguno que pueda aplicar :(
+    // aca van los metodos, no se me ocurre ninguno que pueda aplicar en este caso :(
 }
 
 const sagasFavoritas = [
@@ -32,7 +32,7 @@ const validacionSagas = (nombre) => {
 
 const validacionSagasAnio = (nombre) => {
     input = prompt(`Cual es el ${nombre} de la saga a agregar?`)
-    if (Number(isNaN(input))) {
+    if (Number(isNaN(input)) || input > 2022 || input < 0) {
         alert(`Ingresa un ${nombre} valido`)
         return validacionSagasAnio(nombre)
     } else {
@@ -45,6 +45,28 @@ const muestraSagas = (nombre, sorted) => {
         console.log(`${sorted[sagas].nombre} | ${sorted[sagas].autor} | ${sorted[sagas].anioPrimerLibro}`)
     }
     alert(`${nombre}, la lista se encuentra en consola.`)
+}
+
+const agregarSagas = (sagasFavoritas) => {
+    let nombreSaga = validacionSagas(`nombre`)
+    let autorSaga = validacionSagas(`autor`)
+    let anioPrimerLibroSaga = validacionSagasAnio(`anio`)
+    sagasFavoritas.push(new Sagas(nombreSaga, autorSaga, anioPrimerLibroSaga))
+    alert(`El libro ${sagasFavoritas[sagasFavoritas.length - 1].nombre} del autor ${sagasFavoritas[sagasFavoritas.length - 1].autor} del año ${sagasFavoritas[sagasFavoritas.length - 1].anioPrimerLibro} se agrego correctamente.`)
+    adminFn(nombre)
+}
+
+const eliminarSagas = (nombre, sagasFavoritas) => {
+    muestraSagas(nombre, sagasFavoritas)
+    let eliminar = Number(prompt(`Ingresa el numero de saga a eliminar (1,2,3,etc)`))
+    if (isNaN(eliminar) || eliminar < 0 || eliminar > sagasFavoritas.length) {
+        alert(`${nombre}, no ingresaste un numero correcto, volve a intentarlo.`)
+        eliminarSagas(nombre, sagasFavoritas)
+    } else {
+        sagasFavoritas.splice(eliminar - 1, 1)
+        muestraSagas(nombre, sagasFavoritas)
+        adminFn(nombre)
+    }
 }
 
 const ingreso = () => {
@@ -113,19 +135,10 @@ const adminFn = (nombre) => {
             adminFn(nombre)
             break;
         case `agregar`:
-            let nombreSaga = validacionSagas(`nombre`)
-            let autorSaga = validacionSagas(`autor`)
-            let anioPrimerLibroSaga = validacionSagasAnio(`anio`)
-            sagasFavoritas.push(new Sagas(nombreSaga, autorSaga, anioPrimerLibroSaga))
-            alert(`El libro ${sagasFavoritas[sagasFavoritas.length - 1].nombre} del autor ${sagasFavoritas[sagasFavoritas.length - 1].autor} del año ${sagasFavoritas[sagasFavoritas.length - 1].anioPrimerLibro} se agrego correctamente.`)
-            adminFn(nombre)
+            agregarSagas(sagasFavoritas)
             break;
         case `eliminar`:
-            muestraSagas(nombre, sagasFavoritas)
-            let eliminar = Number(prompt(`Ingresa el numero de saga a eliminar (1,2,3,etc)`))
-            sagasFavoritas.splice(eliminar - 1, 1)
-            muestraSagas(nombre, sagasFavoritas)
-            adminFn(nombre)
+            eliminarSagas(nombre, sagasFavoritas)
             break;
         default:
             alert(`${nombre}, no seleccionaste una opcion correcta. Volve a intentarlo`)
@@ -134,3 +147,8 @@ const adminFn = (nombre) => {
 }
 
 ingreso()
+
+
+
+
+
