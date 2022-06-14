@@ -88,12 +88,11 @@ const creaRaton = (barcode, previousBarcode) => {
         while(crias > 5)
     }
     if (buscaJaula(barcode).tipo === `parental`) {
-        earCode = `none`
         buscaJaula(barcode).parents.push(new Raton(idRaton, fecha, genA, genB, genero, `none`, barcode, `none`))
         idRaton++
     } else if (buscaJaula(barcode).tipo === `noparental`) {
         for (let i = 0; i < crias; i++) {
-            id = idRaton
+            // id = idRaton
             buscaJaula(barcode).pups.push(new Raton(idRaton, fecha, genA, genB, genero, asignEarCode(i), barcode, previousBarcode))
             buscaJaula(previousBarcode).pups.push(new Raton(idRaton, fecha, genA, genB, genero, asignEarCode(i), barcode, `none`))
             idRaton++
