@@ -1,5 +1,5 @@
 const jaulas = []
-
+let idRaton = 1
 
 class Jaula {
     constructor(tipo, date, barcode, cageName,) {
@@ -13,32 +13,17 @@ class Jaula {
 }
 
 class Raton {
-    constructor(birth, genA, genB, gender, previousBarcode) {
+    constructor(idRaton, birth, genA, genB, gender, earCode, actualBarcode, previousBarcode) {
+        this.idRaton = idRaton
         this.birth = birth
         this.gen = [genA, genB]
         this.gender = gender
+        this.earCode = earCode
+        this.actualBarcode = actualBarcode
         this.previousBarcode = previousBarcode
     }
-
-    addGen(a, b) {
-        this.gen = [a, b]
-    }
 }
 
-function buscaJaula(elemento) {
-    let aBuscar = elemento
-    return jaulas.findIndex((e) => aBuscar === e.barcode)
-}
-
-const ingresaCodigo = () => {
-    let codigo = Number(prompt(`Ingresa el codigo`).replace(/ /g, ''))
-    if (!isNaN(codigo) && codigo != "") {
-        return codigo
-    } else {
-        alert(`No ingresaste un numero`)
-        return ingresaCodigo()
-    }
-}
 
 const ingresaFecha = () => {
     const date = new Date()
@@ -54,36 +39,90 @@ const ingresaFecha = () => {
     }
 }
 
-const cuantosCrea = (barcode, posicionPadres, genero, crias, fecha, genA, genB, barcodePadres) => {
-
-    if (jaulas[barcode].tipo === `parental`) {
-        jaulas[barcode].parents.push(new Raton(fecha, genA, genB, genero))
-    } else if (jaulas[barcode].tipo === `noparental`) {
-        for (let i = 0; i < crias; i++) {
-            jaulas[barcode].pups.push(new Raton(fecha, genA, genB, genero, barcodePadres))
-            jaulas[posicionPadres].pups.push(new Raton(fecha, genA, genB, genero))
-        }
+const ingresaCodigo = () => {
+    let codigo = Number(prompt(`Ingresa el codigo`).replace(/ /g, ''))
+    if (!isNaN(codigo) && codigo != "") {
+        return codigo
+    } else {
+        alert(`No ingresaste un numero`)
+        return ingresaCodigo()
     }
 }
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// crea una jaula, el valor es parental / noparental
-const creaJaula = (tipoDeJaula) => {
-    jaulas.push(new Jaula(tipoDeJaula, ingresaFecha(), ingresaCodigo(), prompt(`Nombre de la jaula`)))
+const buscaJaula = (barcode) => {
+    return jaulas.find(e => e.barcode === barcode)
 }
 
-// el codigo es la jaula a la que van, y el segundo es de donde vienen
+const asignEarCode = (element) => {
+    switch (element) {
+        case 0:
+            return `1R`
+        case 1:
+            return `2R`
+        case 2:
+            return `1L`
+        case 3:
+            return `2L`
+        case 4:
+            return `1R1L`
+        default:
+            break;
+    }
+}
 
-const creaRaton = (barcode, barcodePadres) => {
+////////////////////////////////////////////////////////////////////////
+
+const creaJaula = (tipoDeJaula) => {
+    let nobreDeJaula = ''
+    jaulas.push(new Jaula(tipoDeJaula, ingresaFecha(), ingresaCodigo(), nobreDeJaula))
+}
+
+const creaRaton = (barcode, previousBarcode) => {
     let fecha = ingresaFecha()
     let genA = prompt(`Ingresa el Gen A`)
     let genB = prompt(`Ingresa el Gen B`)
     let genero = prompt(`Genero?`)
-    let crias
-    index = buscaJaula(barcode)
-    if (jaulas[index].tipo === `noparental`) {
-        crias = Number(prompt(`Cuantas crias?`))
+    let crias = 0
+    if (buscaJaula(barcode).tipo === `noparental`) {
+        do {crias = Number(prompt(`Cuantas crias? (maximo 5)`))}
+        while(crias > 5)
     }
-    indexPadres = buscaJaula(barcodePadres)
-    cuantosCrea(index, indexPadres, genero, crias, fecha, genA, genB, barcodePadres)
+    if (buscaJaula(barcode).tipo === `parental`) {
+        earCode = `none`
+        buscaJaula(barcode).parents.push(new Raton(idRaton, fecha, genA, genB, genero, `none`, barcode, `none`))
+        idRaton++
+    } else if (buscaJaula(barcode).tipo === `noparental`) {
+        for (let i = 0; i < crias; i++) {
+            id = idRaton
+            buscaJaula(barcode).pups.push(new Raton(idRaton, fecha, genA, genB, genero, asignEarCode(i), barcode, previousBarcode))
+            buscaJaula(previousBarcode).pups.push(new Raton(idRaton, fecha, genA, genB, genero, asignEarCode(i), barcode, `none`))
+            idRaton++
+        }
+    }
+}
+
+const filtraJaulas = (tipo) => {
+    let filtrados = jaulas.filter(jaula => jaula.tipo === tipo)
+    console.log(filtrados)
+}
+
+const filtraRatones = (tipoJaula) => {
+    filtrados = []
+    if (tipoJaula === `padres`) {
+        for (let i = 0; i < jaulas.length; i++) {
+            jaulas[i].parents.forEach(element => {
+                filtrados.push(element)
+            })
+        }
+    } else if (tipoJaula === `pups`) {
+        for (let i = 0; i < jaulas.length; i++) {
+            if (jaulas[i].tipo === `noparental`) {
+                jaulas[i].pups.forEach(element => {
+                    filtrados.push(element)
+                })
+            }
+
+        }
+    }
+    console.log(filtrados)
 }
