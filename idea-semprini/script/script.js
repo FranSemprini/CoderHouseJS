@@ -41,10 +41,10 @@ const ingresaFecha = () => {
 
 const ingresaCodigo = () => {
     let codigo = Number(prompt(`Ingresa el codigo`).replace(/ /g, ''))
-    if (!isNaN(codigo) && codigo != "") {
+    if (!isNaN(codigo) && codigo != "" && buscaJaula(codigo) === undefined) {
         return codigo
     } else {
-        alert(`No ingresaste un numero`)
+        alert(`No ingresaste un numero o el codigo ya esta usado`)
         return ingresaCodigo()
     }
 }
