@@ -64,10 +64,18 @@ const asignEarCode = (element) => {
 
 ////////////////////////////////////////////////////////////////////////
 
-const filtraJaulas = (datoABusacar, dato) => {
+const filtraJaulasTipo = (datoABusacar, dato) => {
     let filtrados = []
     if (datoABusacar === `tipo`) {
         filtrados = jaulas.filter(e => e.tipo === dato)
+    }
+    return filtrados
+}
+
+const filtraJaulasBarcode = (datoABusacar, dato) => {
+    let filtrados = []
+    if (datoABusacar === `barcode`) {
+        filtrados = jaulas.filter(e => e.barcode === dato)
     }
     return filtrados
 }
@@ -96,11 +104,9 @@ const muestraRatones = (datoABusacar, dato) => {
     })
 }
 
-const muestraJaulas = (tipo, dato) => {
+const muestraJaulas = (element) => {
     mainContainer.innerHTML = ''
-    let filtrados = filtraJaulas (tipo, dato)
-    
-    filtrados.forEach(jaula => {
+    element.forEach(jaula => {
         const div = document.createElement('div')
         div.innerHTML = ` <div id=card class="card blue__border">
     <h1 class="card__title">JAULA</h1>
@@ -109,7 +115,7 @@ const muestraJaulas = (tipo, dato) => {
     <p id="jaula__cageName">Cage Name: ${jaula.cageName}</p>
     </section>
     <section id="cardRow" class="card__row">
-    <p id="jaula__tipo">Tipo: ${tipo}</p>
+    <p id="jaula__tipo">Tipo: ${jaula.tipo}</p>
     <p id="jaula__fecha">Fecha: ${jaula.date}</p>
     </section>
     <section id="cardRow" class="card__row light__grey">
@@ -327,8 +333,7 @@ const creaFormularioBusqueda = () => {
     formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
     const div = document.createElement('div')
-    div.innerHTML = `
-    <ul class="d-flex justify-content-around form__ul">
+    div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
     <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>
     <li><a id="selectRaton" href="javascript:void(0)">Raton</a></li>
 </ul>`
@@ -349,16 +354,15 @@ const searchRaton = () => {
     formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
     const div = document.createElement('div')
-    formSelect3.innerHTML = 
-    `<form id="myForm" action="" class="myForm mt-3">
+    formSelect3.innerHTML = `
+    <form id="myForm" action="" class="myForm mt-3">
     <div class="d-flex flex-row m-3">
     <select class="form-select mx-2" aria-label="" id="toSearch">
         <option value="">Valor a buscar</option>
         <option value="gender">Gender</option>
         <option value="type">Type</option>
     </select>
-</div>
-</form>`
+</div></form>`
     toSearch = document.querySelector(`#toSearch`);
     toSearch.addEventListener(`change`, (e) => {
         if (toSearch.value = `gender`) {
@@ -367,7 +371,6 @@ const searchRaton = () => {
     })
 
 }
-
 
 const test = () => {
     const div = document.createElement(`div`)
@@ -391,35 +394,11 @@ const test = () => {
     })
 }
 
-
-
 const searchJaula = () => {
-    mainContainer.innerHTML = ''
-    formSelect.innerHTML = ''
-    formSelect2.innerHTML = ''
-    formSelect3.innerHTML = ''
-    const div = document.createElement('div')
-    formSelect3.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
-    <div class="d-flex flex-row m-3">
-    <select class="form-select mx-2" aria-label="" id="toSearch">
-        <option value="">Valor a buscar</option>
-        <option value="tipo">Tipo</option>
-    </select>
-</div></form>`
-    toSearch = document.querySelector(`#toSearch`);
-    toSearch.addEventListener(`change`, (e) => {
-        if (toSearch.value = `tipo`) {
-            buscaTipo()
-        }
-    })
 
-}
-
-// ////////////////////////////////////
-
-const buscaTipo = () => {
     const div = document.createElement(`div`)
     formSelect3.innerHTML = ''
+    mainContainer.innerHTML = ''
     div.innerHTML = `
 <form id="myForm" action="" class="myForm mt-3">
 <div class="d-flex flex-row">
@@ -428,6 +407,7 @@ const buscaTipo = () => {
         <option value="parental">Parental</option>
         <option value="noparental">No Parental</option>
     </select>
+    <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
 </div>
 <button type="submit" class="btn btn-primary mt-3">Submit</button>
 </form>`
@@ -435,35 +415,26 @@ const buscaTipo = () => {
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();
         let tipoJulaABuscar = tipo.value
+        let barcodeABuscar = barcode.value
+        let jaulasAMostrar = []
         mainContainer.innerHTML = '';
-        muestraJaulas(`tipo`, tipoJulaABuscar)
+        jaulas.forEach(element => {
+            if (element.tipo === tipoJulaABuscar && element.barcode === barcodeABuscar) {
+                jaulasAMostrar.push(element)
+            } else if (tipoJulaABuscar === `` && element.barcode === barcodeABuscar) {
+                jaulasAMostrar.push(element)
+            } else if (element.tipo === tipoJulaABuscar && barcodeABuscar === ``) {
+                jaulasAMostrar.push(element)
+            }
+        })
+        console.log(jaulasAMostrar)
+        muestraJaulas(jaulasAMostrar)
     })
 }
 
-const buscaBarcode = () => {
-    const div = document.createElement(`div`)
-    formSelect3.innerHTML = ''
-    div.innerHTML = `
-<form id="myForm" action="" class="myForm mt-3">
-<div class="d-flex flex-row">
-    <select class="form-select mx-2" aria-label="" id="barcode">
-    <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
-    </select>
-</div>
-<button type="submit" class="btn btn-primary mt-3">Submit</button>
-</form>`
-    mainContainer.append(div);
-    myForm.addEventListener(`submit`, (e) => {
-        e.preventDefault();
-        let barcodeAbuscar = tipo.barcode
-        mainContainer.innerHTML = '';
-        muestraJaulas(`barcode`, barcodeAbuscar)
-    })
-}
-
-
-// /////////////////////////////////////////
 
 ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
+
+
 
