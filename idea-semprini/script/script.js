@@ -69,40 +69,6 @@ const filtraJaulas = (datoABusacar, dato) => {
     if (datoABusacar === `tipo`) {
         filtrados = jaulas.filter(e => e.tipo === dato)
     }
-
-    // switch (datoABusacar) {
-    //     case `tipo`:
-    //         if (dato === `parents`) {
-    //             let jaulaABuscar = filtraJaulas(`parental`)
-    //             for (let i = 0; i < jaulaABuscar.length; i++) {
-    //                 jaulaABuscar[i].parents.forEach(element => {
-    //                     filtrados.push(element)
-    //                 })
-    //             }
-    //         } else if (dato === `pups`) {
-    //             let jaulaABuscar = filtraJaulas(`noparental`)
-    //             for (let i = 0; i < jaulaABuscar.length; i++) {
-    //                 jaulaABuscar[i].pups.forEach(element => {
-    //                     filtrados.push(element)
-    //                 })
-    //             }
-    //         }
-    //         break;
-    //     case `todo`:
-    //         let jaulaABuscar = filtraJaulas(`parental`)
-    //         for (let i = 0; i < jaulaABuscar.length; i++) {
-    //             jaulaABuscar[i].parents.forEach(element => {
-    //                 filtrados.push(element)
-    //             })
-    //         }
-    //         jaulaABuscar = filtraJaulas(`noparental`)
-    //         for (let i = 0; i < jaulaABuscar.length; i++) {
-    //             jaulaABuscar[i].pups.forEach(element => {
-    //                 filtrados.push(element)
-    //             })
-    //         }
-    //         break;
-    // }
     return filtrados
 }
 
@@ -361,7 +327,8 @@ const creaFormularioBusqueda = () => {
     formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
     const div = document.createElement('div')
-    div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
+    div.innerHTML = `
+    <ul class="d-flex justify-content-around form__ul">
     <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>
     <li><a id="selectRaton" href="javascript:void(0)">Raton</a></li>
 </ul>`
@@ -382,13 +349,16 @@ const searchRaton = () => {
     formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
     const div = document.createElement('div')
-    formSelect3.innerHTML = `<div class="d-flex flex-row m-3">
+    formSelect3.innerHTML = 
+    `<form id="myForm" action="" class="myForm mt-3">
+    <div class="d-flex flex-row m-3">
     <select class="form-select mx-2" aria-label="" id="toSearch">
         <option value="">Valor a buscar</option>
         <option value="gender">Gender</option>
         <option value="type">Type</option>
     </select>
-</div>`
+</div>
+</form>`
     toSearch = document.querySelector(`#toSearch`);
     toSearch.addEventListener(`change`, (e) => {
         if (toSearch.value = `gender`) {
@@ -429,23 +399,25 @@ const searchJaula = () => {
     formSelect2.innerHTML = ''
     formSelect3.innerHTML = ''
     const div = document.createElement('div')
-    formSelect3.innerHTML = `<div class="d-flex flex-row m-3">
+    formSelect3.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    <div class="d-flex flex-row m-3">
     <select class="form-select mx-2" aria-label="" id="toSearch">
         <option value="">Valor a buscar</option>
         <option value="tipo">Tipo</option>
     </select>
-</div>`
+</div></form>`
     toSearch = document.querySelector(`#toSearch`);
     toSearch.addEventListener(`change`, (e) => {
         if (toSearch.value = `tipo`) {
-            test2()
+            buscaTipo()
         }
     })
 
 }
 
+// ////////////////////////////////////
 
-const test2 = () => {
+const buscaTipo = () => {
     const div = document.createElement(`div`)
     formSelect3.innerHTML = ''
     div.innerHTML = `
@@ -468,80 +440,30 @@ const test2 = () => {
     })
 }
 
+const buscaBarcode = () => {
+    const div = document.createElement(`div`)
+    formSelect3.innerHTML = ''
+    div.innerHTML = `
+<form id="myForm" action="" class="myForm mt-3">
+<div class="d-flex flex-row">
+    <select class="form-select mx-2" aria-label="" id="barcode">
+    <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
+    </select>
+</div>
+<button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>`
+    mainContainer.append(div);
+    myForm.addEventListener(`submit`, (e) => {
+        e.preventDefault();
+        let barcodeAbuscar = tipo.barcode
+        mainContainer.innerHTML = '';
+        muestraJaulas(`barcode`, barcodeAbuscar)
+    })
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const creaFormularioBusqueda = () => {
-//     const div = document.createElement(`div`)
-//     mainContainer.innerHTML = '';
-//     formSelect2.innerHTML = ``;
-//     formSelect3.innerHTML = `
-//     <div class="d-flex flex-row m-3">
-//     <select class="form-select mx-2" aria-label="" id="toSearch">
-//         <option value="">Valor a buscar</option>
-//         <option value="gender">Gender</option>
-//         <option value="type">Type</option>
-//     </select>
-// </div>`
-//     let toSearch = document.querySelector(`#toSearch`)
-//     toSearch.addEventListener(`change`, (e) => {
-//         if (toSearch.value === `gender`) {
-//             test(e)
-//         } else if (toSearch.value === `type`) {
-//             div.innerHTML = `
-//         <form id="myForm" action="" class="myForm mt-3">
-//         <div class="d-flex flex-row">
-//           <select class="form-select mx-2" aria-label="" id="valueToSearch">
-//         <option value="">Valor a Buscar</option>
-//         <option value="Parent">Parent</option>
-//         <option value="pups">Pups</option>
-//          </select>
-//         </div>
-//         <button type="submit" class="btn btn-primary mt-3">Submit</button>
-//         </form>`
-//         }
-
-//     }
-//     )
-//     mainContainer.append(div);
-//     myForm.addEventListener(`submit`, (e) => {
-//     e.preventDefault();
-//     console.log(e)
-//     mainContainer.innerHTML = '';
-//     })
-// }
+// /////////////////////////////////////////
 
 ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
 
-
-
-
-// const test = () => {
-//     const div = document.createElement(`div`)
-//     div.innerHTML = `
-// <form id="myForm" action="" class="myForm mt-3">
-// <div class="d-flex flex-row">
-//     <select class="form-select mx-2" aria-label="" id="valueToSearch">
-//         <option value="">Valor a Buscar</option>
-//         <option value="male">Male</option>
-//         <option value="female">Female</option>
-//     </select>
-// </div>
-// <button type="submit" class="btn btn-primary mt-3">Submit</button>
-// </form>`
-
-// }
