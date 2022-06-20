@@ -16,6 +16,7 @@ ul {
 
 .header__nav {
   background-color: #6D597A;
+  font-size: 22px;
 }
 
 .header__ul > li {
@@ -33,6 +34,12 @@ ul {
 
 .selectForm {
   background-color: #ccaee1;
+  font-size: 20px;
+}
+
+.selectForm2 {
+  background-color: #e5d4f2;
+  font-size: 18px;
 }
 
 .form__ul > li {

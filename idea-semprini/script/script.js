@@ -196,7 +196,6 @@ const creaJaula = () => {
 
 const creaRaton = () => {
     mainContainer.innerHTML = ''
-    formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
     const div = document.createElement('div')
     div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
