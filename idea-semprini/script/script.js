@@ -63,6 +63,26 @@ const asignEarCode = (element) => {
 
 //////////////////////////////////////////
 
+const filtaRatonesXId = (dato) => {
+    filtrados = ``
+    for (let i = 0; i < jaulas.length; i++) {
+        if (jaulas[i].tipo === `parental`) {
+            jaulas[i].parents.forEach(element => {
+                if (element.idRaton == dato) {
+                    filtrados = element
+                }
+            })
+        } else if (jaulas[i].tipo === `noparental`) {
+            jaulas[i].pups.forEach(element => {
+                if (element.idRaton == dato) {
+                    filtrados = element
+                }
+            })
+        }
+    }
+    return filtrados
+}
+
 const filtaRatones = (datoABusacar, dato) => {
     let filtrados = []
     if (datoABusacar === `barcode`) {
@@ -95,41 +115,50 @@ const filtaRatones = (datoABusacar, dato) => {
             })
         }
     } else if (datoABusacar === `gen`) {
-        let aFiltrarB = []
-        dato.forEach(element => {
-            element.forEach(element2 => {
-                aFiltrarB.push(element2)
-                console.log(element2)
-            });
-        });
-        for (let i = 0; i < jaulas.length; i++) {
-            let preFiltro = ``
-            let aFiltrarR = []
-            jaulas[i].parents.forEach(element => {
-                aFiltrarR = []
-                element.gen.forEach(genes => {
-                    genes.forEach(element2 => {
-                        aFiltrarR.push(element2)
-                        preFiltro = element
-                        for (let e = 0; e < aFiltrarB.length; e++) {
-                            if (aFiltrarB[e] === `none`) {
-                                aFiltrarB.splice(e, 1)
-                                aFiltrarR.splice(e, 1)
-                                e--
-                            }
+        let cuatro = []
+        let tres = []
+        let dos = []
+        let uno = []
+        let aFiltrarR = []
+            for (let i = 0; i < jaulas.length; i++) {
+                jaulas[i].parents.forEach(element => {
+                    coincidencias = 0
+                    for (var i = 0; i < element.gen.length; i++) {
+                        if (dato[i] === element.gen[i] || dato[i] === `any`) {
+                            coincidencias++
                         }
-                        if (JSON.stringify(aFiltrarB) == JSON.stringify(aFiltrarR)) {
-                            filtrados.push(preFiltro)
-                        }
-                    })
+                    }
+                    let ratonAFiltrar = element.idRaton
+                    aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
                 })
-            })
+            }
+        for (let i = 0; i < aFiltrarR.length; i++) {
+            if (aFiltrarR[i].coincidencias === 4) {
+                cuatro.push(filtaRatonesXId(aFiltrarR[i].id))
+            } else if (aFiltrarR[i].coincidencias === 3) {
+                tres.push(filtaRatonesXId(aFiltrarR[i].id))
+            } else if (aFiltrarR[i].coincidencias === 2) {
+                dos.push(filtaRatonesXId(aFiltrarR[i].id))
+            } else if (aFiltrarR[i].coincidencias === 1) {
+                uno.push(filtaRatonesXId(aFiltrarR[i].id))
+            }
+        }
+        if (cuatro.length >= 1) {
+            filtrados = cuatro
+        } else if (tres.length >= 1) {
+            filtrados = tres
+        } else if (dos.length >= 1) {
+            filtrados = dos
+        } else {
+            filtrados = uno
         }
     }
-    console.log(filtrados)
-    return filtrados
 
+
+    return filtrados
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -180,7 +209,7 @@ const muestraJaulas = (element) => {
         div.addEventListener(`click`, () => {
             console.log(jaula.barcode)
             muestraRatones(`barcode`, jaula.barcode)
-            
+
         })
     });
 };
@@ -288,11 +317,13 @@ const creaParental = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genA">Gen 1</label>
                 <select class="form-select mx-2" aria-label="" id="genA">
+                    <option value="none">None</option>
                     <option value="genA1">1</option>
                     <option value="genA2">2</option>
                     <option value="genA3">3</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genAS">
+                <option value="none">None</option>
                     <option value="genAS1">+</option>
                     <option value="genAS2">-</option>
                 </select>
@@ -300,11 +331,13 @@ const creaParental = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genB">Gen 2</label>
                 <select class="form-select mx-2" aria-label="" id="genB">
-                    <option value="genB1">1</option>
-                    <option value="genB2">2</option>
-                    <option value="genB3">3</option>
+                <option value="none">None</option>
+                    <option value="genB1">4</option>
+                    <option value="genB2">5</option>
+                    <option value="genB3">6</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genBS">
+                <option value="none">None</option>
                     <option value="genBS1">+</option>
                     <option value="genBS2">-</option>
                 </select>
@@ -323,7 +356,7 @@ const creaParental = () => {
         e.preventDefault();
         var barcodeRaton = barcode.value
         var dateRaton = fechaToArray(date.value)
-        var genRaton = [[genA.value, genAS.value], [genB.value, genBS.value]]
+        var genRaton = [genA.value, genAS.value, genB.value, genBS.value]
         var genderRaron = gender.value
         buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parental`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         idRaton++
@@ -451,12 +484,14 @@ const buscaGenesRaton = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genA">Gen 1</label>
                 <select class="form-select mx-2" aria-label="" id="genA">
+                    <option value="any">Any</option>
                     <option value="none">None</option>
                     <option value="genA1">1</option>
                     <option value="genA2">2</option>
                     <option value="genA3">3</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genAS">
+                <option value="any">Any</option>
                 <option value="none">None</option>
                     <option value="genAS1">+</option>
                     <option value="genAS2">-</option>
@@ -465,12 +500,14 @@ const buscaGenesRaton = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genB">Gen 2</label>
                 <select class="form-select mx-2" aria-label="" id="genB">
+                <option value="any">Any</option>
                 <option value="none">None</option>
-                    <option value="genB1">1</option>
-                    <option value="genB2">2</option>
-                    <option value="genB3">3</option>
+                    <option value="genB1">4</option>
+                    <option value="genB2">5</option>
+                    <option value="genB3">6</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genBS">
+                <option value="any">Any</option>
                 <option value="none">None</option>
                     <option value="genBS1">+</option>
                     <option value="genBS2">-</option>
@@ -482,7 +519,7 @@ const buscaGenesRaton = () => {
     myForm2.addEventListener(`submit`, (e) => {
         formSelect3.innerHTML = ''
         e.preventDefault();
-        genAll = [[genA.value, genAS.value], [genB.value, genBS.value]]
+        genAll = [genA.value, genAS.value, genB.value, genBS.value]
         muestraRatones(`gen`, genAll)
     })
 }
