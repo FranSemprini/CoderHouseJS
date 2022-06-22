@@ -1,4 +1,6 @@
-const jaulas = []
+let jaulas = []
+jaulas = JSON.parse(localStorage.getItem(`jaulas`))
+
 let idRaton = 1
 let idJaula = 1
 let selectJaula = document.querySelector(`#selectJaula`)
@@ -401,7 +403,7 @@ const creaNoParental = () => {
         e.preventDefault();
         var barcodeRaton = barcode.value
         var barcodePadresRaton = barcodePadres.value
-        var dateRaton = date.value
+        var dateRaton = fechaToArray(date.value)
         var genderRaron = gender.value
         var criasRaton = amount.value
         for (i = 0; i < criasRaton; i++) {
