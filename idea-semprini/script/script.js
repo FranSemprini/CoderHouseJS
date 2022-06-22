@@ -27,7 +27,7 @@ class Raton {
         this.gen = gen
         this.gender = gender
         this.earCode = earCode
-        this.actualBarcode = actualBarcode
+        this.actualBarcode = Number(actualBarcode)
         this.previousBarcode = previousBarcode
     }
 }
@@ -61,33 +61,87 @@ const asignEarCode = (element) => {
     }
 }
 
-////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////
 
-const filtraJaulasTipo = (datoABusacar, dato) => {
-    let filtrados = []
-    if (datoABusacar === `tipo`) {
-        filtrados = jaulas.filter(e => e.tipo === dato)
-    }
-    return filtrados
-}
-
-const filtraJaulasBarcode = (datoABusacar, dato) => {
+const filtaRatones = (datoABusacar, dato) => {
     let filtrados = []
     if (datoABusacar === `barcode`) {
-        filtrados = jaulas.filter(e => e.barcode === dato)
+        for (let i = 0; i < jaulas.length; i++) {
+            if (jaulas[i].tipo === `parental`) {
+                jaulas[i].parents.forEach(element => {
+                    if (element.actualBarcode == dato) {
+                        filtrados.push(element)
+                    }
+                })
+            } else if (jaulas[i].tipo === `noparental`) {
+                jaulas[i].pups.forEach(element => {
+                    if (element.actualBarcode == dato) {
+                        filtrados.push(element)
+                    }
+                })
+            }
+        }
+    } else if (datoABusacar === `previousBarcode`) {
+        for (let i = 0; i < jaulas.length; i++) {
+            jaulas[i].parents.forEach(element => {
+                if (element.previousBarcode == dato) {
+                    filtrados.push(element)
+                }
+            })
+            jaulas[i].pups.forEach(element => {
+                if (element.previousBarcode == dato) {
+                    filtrados.push(element)
+                }
+            })
+        }
+    } else if (datoABusacar === `gen`) {
+        let aFiltrarB = []
+        dato.forEach(element => {
+            element.forEach(element2 => {
+                aFiltrarB.push(element2)
+                console.log(element2)
+            });
+        });
+        for (let i = 0; i < jaulas.length; i++) {
+            let preFiltro = ``
+            let aFiltrarR = []
+            jaulas[i].parents.forEach(element => {
+                aFiltrarR = []
+                element.gen.forEach(genes => {
+                    genes.forEach(element2 => {
+                        aFiltrarR.push(element2)
+                        preFiltro = element
+                        for (let e = 0; e < aFiltrarB.length; e++) {
+                            if (aFiltrarB[e] === `none`) {
+                                aFiltrarB.splice(e, 1)
+                                aFiltrarR.splice(e, 1)
+                                e--
+                            }
+                        }
+                        if (JSON.stringify(aFiltrarB) == JSON.stringify(aFiltrarR)) {
+                            filtrados.push(preFiltro)
+                        }
+                    })
+                })
+            })
+        }
     }
+    console.log(filtrados)
     return filtrados
+
 }
+
+////////////////////////////////////////////////////////////////////////
 
 const muestraRatones = (datoABusacar, dato) => {
     mainContainer.innerHTML = ``
-    filtrados = filtraRatones(datoABusacar, dato)
+    filtrados = filtaRatones(datoABusacar, dato)
     filtrados.reverse().forEach(raton => {
         const div = document.createElement(`div`)
         div.innerHTML = ` <div id=card class="card blue__border">
         <h1 class="card__title">RATON - ${raton.tipo}</h1>
         <section id="cardRow" class="card__row light__grey">
-        <p id="raton__previousBarcode">Barcode: ${raton.barcode}</p>
+        <p id="raton__previousBarcode">Barcode: ${raton.actualBarcode}</p>
         <p id="raton__previousBarcode">Previous Barcode: ${raton.previousBarcode}</p>
         </section>
         <section id="cardRow" class="card__row">
@@ -123,6 +177,11 @@ const muestraJaulas = (element) => {
     </section></div>
     `
         mainContainer.append(div)
+        div.addEventListener(`click`, () => {
+            console.log(jaula.barcode)
+            muestraRatones(`barcode`, jaula.barcode)
+            
+        })
     });
 };
 
@@ -139,6 +198,7 @@ const creaFormularioIngreso = () => {
     mainContainer.innerHTML = ''
     formSelect.innerHTML = ''
     formSelect2.innerHTML = ''
+    formSelect3.innerHTML = ''
     const div = document.createElement('div')
     div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
     <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>
@@ -340,6 +400,93 @@ const creaFormularioBusqueda = () => {
     })
 }
 
+const searchRaton = () => {
+    const div = document.createElement(`div`)
+    formSelect3.innerHTML = ''
+    mainContainer.innerHTML = ''
+    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    <div class="d-flex flex-row">
+        <select class="form-select mx-2" aria-label="" id="aBuscar">
+            <option value="">Valor a Buscar</option>
+            <option value="barcodeAntetior">Barcode Anterior</option>
+            <option value="gen">Gen</option>
+        </select>
+    </div>
+    </form>`
+    formSelect3.append(div)
+    aBuscar.addEventListener("change", (e) => {
+        switch (aBuscar.value) {
+            case `barcodeAntetior`:
+                buscarBarcodeAnteriorRaton()
+                break
+            case `gen`:
+                buscaGenesRaton()
+                break
+        }
+    })
+}
+
+const buscarBarcodeAnteriorRaton = () => {
+    const div = document.createElement(`div`)
+    mainContainer.innerHTML = ''
+    div.innerHTML = `
+            <form id="myForm2" action="" class="myForm mt-3">
+            <div class="d-flex flex-row">
+                <input type="number" class="form-control mx-2" placeholder="Barcode" id="data">
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>`
+    mainContainer.append(div)
+    myForm2.addEventListener(`submit`, (e) => {
+        formSelect3.innerHTML = ''
+        e.preventDefault();
+        muestraRatones(`previousBarcode`, data.value)
+    })
+}
+
+const buscaGenesRaton = () => {
+    const div = document.createElement(`div`)
+    mainContainer.innerHTML = ''
+    div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
+            <div class="mt-3 d-flex flex-row">
+                <label for="genA">Gen 1</label>
+                <select class="form-select mx-2" aria-label="" id="genA">
+                    <option value="none">None</option>
+                    <option value="genA1">1</option>
+                    <option value="genA2">2</option>
+                    <option value="genA3">3</option>
+                </select>
+                <select class="form-select mx-2" aria-label="" id="genAS">
+                <option value="none">None</option>
+                    <option value="genAS1">+</option>
+                    <option value="genAS2">-</option>
+                </select>
+            </div>
+            <div class="mt-3 d-flex flex-row">
+                <label for="genB">Gen 2</label>
+                <select class="form-select mx-2" aria-label="" id="genB">
+                <option value="none">None</option>
+                    <option value="genB1">1</option>
+                    <option value="genB2">2</option>
+                    <option value="genB3">3</option>
+                </select>
+                <select class="form-select mx-2" aria-label="" id="genBS">
+                <option value="none">None</option>
+                    <option value="genBS1">+</option>
+                    <option value="genBS2">-</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>`
+    mainContainer.append(div)
+    myForm2.addEventListener(`submit`, (e) => {
+        formSelect3.innerHTML = ''
+        e.preventDefault();
+        genAll = [[genA.value, genAS.value], [genB.value, genBS.value]]
+        muestraRatones(`gen`, genAll)
+    })
+}
+
 const searchJaula = () => {
     const div = document.createElement(`div`)
     formSelect3.innerHTML = ''
@@ -375,7 +522,6 @@ const searchJaula = () => {
                 jaulasAMostrar.push(element)
             }
         })
-        console.log(jaulasAMostrar)
         muestraJaulas(jaulasAMostrar)
     })
 }
