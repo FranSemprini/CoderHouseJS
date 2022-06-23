@@ -30,7 +30,7 @@ class Raton {
         this.gender = gender
         this.earCode = earCode
         this.actualBarcode = Number(actualBarcode)
-        this.previousBarcode = previousBarcode
+        this.previousBarcode = Number(previousBarcode)
     }
 }
 
@@ -65,102 +65,109 @@ const asignEarCode = (element) => {
 
 //////////////////////////////////////////
 
-const filtaRatonesXId = (dato) => {
-    filtrados = ``
-    for (let i = 0; i < jaulas.length; i++) {
-        if (jaulas[i].tipo === `parental`) {
-            jaulas[i].parents.forEach(element => {
-                if (element.idRaton == dato) {
-                    filtrados = element
-                }
-            })
-        } else if (jaulas[i].tipo === `noparental`) {
-            jaulas[i].pups.forEach(element => {
-                if (element.idRaton == dato) {
-                    filtrados = element
-                }
-            })
-        }
-    }
-    return filtrados
-}
-
 const filtaRatones = (datoABusacar, dato) => {
-    let filtrados = []
-    if (datoABusacar === `barcode`) {
+    if (datoABusacar === `id`) {
+        let filtrados = ``
         for (let i = 0; i < jaulas.length; i++) {
             if (jaulas[i].tipo === `parental`) {
                 jaulas[i].parents.forEach(element => {
-                    if (element.actualBarcode == dato) {
-                        filtrados.push(element)
+                    if (element.idRaton == dato) {
+                        filtrados = element
                     }
                 })
             } else if (jaulas[i].tipo === `noparental`) {
                 jaulas[i].pups.forEach(element => {
-                    if (element.actualBarcode == dato) {
-                        filtrados.push(element)
+                    if (element.idRaton == dato) {
+                        filtrados = element
                     }
                 })
             }
         }
-    } else if (datoABusacar === `previousBarcode`) {
-        for (let i = 0; i < jaulas.length; i++) {
+        return filtrados
+    }
+let filtrados = []
+if (datoABusacar === `barcode`) {
+    for (let i = 0; i < jaulas.length; i++) {
+        if (jaulas[i].tipo === `parental`) {
             jaulas[i].parents.forEach(element => {
-                if (element.previousBarcode == dato) {
+                if (element.actualBarcode == dato) {
                     filtrados.push(element)
                 }
             })
+        } else if (jaulas[i].tipo === `noparental`) {
             jaulas[i].pups.forEach(element => {
-                if (element.previousBarcode == dato) {
+                if (element.actualBarcode == dato) {
                     filtrados.push(element)
                 }
             })
-        }
-    } else if (datoABusacar === `gen`) {
-        let cuatro = []
-        let tres = []
-        let dos = []
-        let uno = []
-        let aFiltrarR = []
-            for (let i = 0; i < jaulas.length; i++) {
-                jaulas[i].parents.forEach(element => {
-                    coincidencias = 0
-                    for (var i = 0; i < element.gen.length; i++) {
-                        if (dato[i] === element.gen[i] || dato[i] === `any`) {
-                            coincidencias++
-                        }
-                    }
-                    let ratonAFiltrar = element.idRaton
-                    aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
-                })
-            }
-        for (let i = 0; i < aFiltrarR.length; i++) {
-            if (aFiltrarR[i].coincidencias === 4) {
-                cuatro.push(filtaRatonesXId(aFiltrarR[i].id))
-            } else if (aFiltrarR[i].coincidencias === 3) {
-                tres.push(filtaRatonesXId(aFiltrarR[i].id))
-            } else if (aFiltrarR[i].coincidencias === 2) {
-                dos.push(filtaRatonesXId(aFiltrarR[i].id))
-            } else if (aFiltrarR[i].coincidencias === 1) {
-                uno.push(filtaRatonesXId(aFiltrarR[i].id))
-            }
-        }
-        if (cuatro.length >= 1) {
-            filtrados = cuatro
-        } else if (tres.length >= 1) {
-            filtrados = tres
-        } else if (dos.length >= 1) {
-            filtrados = dos
-        } else {
-            filtrados = uno
         }
     }
+} else if (datoABusacar === `previousBarcode`) {
+    for (let i = 0; i < jaulas.length; i++) {
+        jaulas[i].parents.forEach(element => {
+            if (element.previousBarcode == dato) {
+                filtrados.push(element)
+            }
+        })
+        jaulas[i].pups.forEach(element => {
+            if (element.previousBarcode == dato) {
+                filtrados.push(element)
+            }
+        })
+    }
+} else if (datoABusacar === `gen`) {
+    // let cuatro = []
+    // let tres = []
+    // let dos = []
+    // let uno = []
+    let aFiltrarR = []
+    for (let i = 0; i < jaulas.length; i++) {
+        jaulas[i].parents.forEach(element => {
+            coincidencias = 0
+            let validaCantidad = []
+            for (var i = 0; i < element.gen.length; i++) {
+                if (dato[i] === element.gen[i] || dato[i] === `any`) {
+                    validaCantidad.push(dato[i])
+                    coincidencias++
+                }
+            }
+            let ratonAFiltrar = element.idRaton
+            if (validaCantidad.length === 4) {
+                aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
+            }
+        })
+    }
 
+    aFiltrarR.forEach(element => {
+        aFiltrarR.push(filtaRatones(`id`,element.id))
+    });
 
-    return filtrados
+    filtrados = aFiltrarR.filter(e => e.gender != undefined)
+
+    // cuatro = aFiltrarR.filter(e => e.coincidencias === 4)
+    // tres = aFiltrarR.filter(e => e.coincidencias === 3)
+    // dos = aFiltrarR.filter(e => e.coincidencias === 2)
+    // uno = aFiltrarR.filter(e => e.coincidencias === 1)
+    // filtrados = cuatro
+    // // const ultimaComprobacion = (caja) => {
+    // cuatro.forEach(element => {
+    //     cuatro.push(filtaRatonesXId(element.id))
+    // });
+    // cuatro = cuatro.filter(e => e.gender != undefined)
+    // // }
+
+    // if (cuatro.length >= 1) {
+    //     filtrados = cuatro
+    // } else if (tres.length >= 1) {
+    //     filtrados = ultimaComprobacion(tres)
+    // } else if (dos.length >= 1) {
+    //     filtrados = ultimaComprobacion(dos)
+    // } else if (uno.length >= 1) {
+    //     filtrados = ultimaComprobacion(uno)
+    // }
 }
-
-
+return filtrados
+}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -209,7 +216,6 @@ const muestraJaulas = (element) => {
     `
         mainContainer.append(div)
         div.addEventListener(`click`, () => {
-            console.log(jaula.barcode)
             muestraRatones(`barcode`, jaula.barcode)
 
         })
@@ -220,10 +226,17 @@ const muestraJaulas = (element) => {
 
 const ingresaDatos = document.querySelector(`#ingresaDatos`)
 const visualizaDatos = document.querySelector(`#visualizaDatos`)
+const title = document.querySelector(`#title`)
 const formSelect = document.querySelector(`#formSelect`)
 const formSelect2 = document.querySelector(`#formSelect2`)
 const formSelect3 = document.querySelector(`#formSelect3`)
 
+const limpiaHoja = () => {
+    mainContainer.innerHTML = ''
+    formSelect.innerHTML = ''
+    formSelect2.innerHTML = ''
+    formSelect3.innerHTML = ''
+}
 
 const creaFormularioIngreso = () => {
     mainContainer.innerHTML = ''
@@ -249,6 +262,7 @@ const creaFormularioIngreso = () => {
 const creaJaula = () => {
     const div = document.createElement('div')
     formSelect2.innerHTML = ''
+    formSelect3.innerHTML = ''
     mainContainer.innerHTML = '';
     div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
             <div>
@@ -286,21 +300,27 @@ const creaJaula = () => {
 }
 
 const creaRaton = () => {
+    const div = document.createElement(`div`)
+    formSelect3.innerHTML = ''
     mainContainer.innerHTML = ''
-    formSelect2.innerHTML = ''
-    const div = document.createElement('div')
-    div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
-    <li><a id="selectParental"  href="javascript:void(0)">Parent</a></li>
-    <li><a id="selectNoParental" href="javascript:void(0)">Pups</a></li>
-</ul>`
-    formSelect2.append(div)
-    selectParental = document.querySelector(`#selectParental`);
-    selectNoParental = document.querySelector(`#selectNoParental`);
-    selectParental.addEventListener(`click`, (e) => {
-        creaParental()
-    })
-    selectNoParental.addEventListener(`click`, (e) => {
-        creaNoParental()
+    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    <div class="d-flex flex-row">
+        <select class="form-select mx-2" aria-label="" id="aBuscar">
+            <option value="">Raton a crear</option>
+            <option value="selectParental">Parent</option>
+            <option value="selectNoParental">Pup</option>
+        </select>
+    </div>
+    </form>`
+    formSelect3.append(div)
+    aBuscar.addEventListener("change", (e) => {
+        switch (aBuscar.value) {
+            case `selectParental`:
+                creaParental()
+                break
+            case `selectNoParental`:
+                creaNoParental()
+        }
     })
 }
 
@@ -308,7 +328,7 @@ const creaParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
     mainContainer.innerHTML = '';
-    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
             <div class="d-flex flex-row">
                 <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
                 <select class="form-select mx-2" aria-label="" id="gender">
@@ -354,7 +374,7 @@ const creaParental = () => {
             </div>
         </form>`
     mainContainer.append(div)
-    myForm.addEventListener(`submit`, (e) => {
+    myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
         var barcodeRaton = barcode.value
         var dateRaton = fechaToArray(date.value)
@@ -370,7 +390,7 @@ const creaNoParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
     mainContainer.innerHTML = '';
-    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
     <div class="d-flex flex-row">
         <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
         <select class="form-select mx-2" aria-label="" id="gender">
@@ -399,7 +419,7 @@ const creaNoParental = () => {
     </div>
 </form>`
     mainContainer.append(div)
-    myForm.addEventListener(`submit`, (e) => {
+    myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
         var barcodeRaton = barcode.value
         var barcodePadresRaton = barcodePadres.value
@@ -565,9 +585,8 @@ const searchJaula = () => {
     })
 }
 
-
 ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
-
+title.addEventListener(`click`, limpiaHoja)
 
 
