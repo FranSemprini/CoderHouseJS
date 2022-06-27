@@ -1,8 +1,10 @@
 let jaulas = []
 jaulas = JSON.parse(localStorage.getItem(`jaulas`))
 
-let idRaton = 1
-let idJaula = 1
+
+
+let idRaton = 40
+let idJaula = 40
 let selectJaula = document.querySelector(`#selectJaula`)
 let selectRaton = document.querySelector(`#selectRaton`)
 let selectParental = document.querySelector(`#selectParental`)
@@ -30,7 +32,7 @@ class Raton {
         this.gender = gender
         this.earCode = earCode
         this.actualBarcode = Number(actualBarcode)
-        this.previousBarcode = Number(previousBarcode)
+        this.previousBarcode = []
     }
 }
 
@@ -65,110 +67,109 @@ const asignEarCode = (element) => {
 
 //////////////////////////////////////////
 
+
 const filtaRatones = (datoABusacar, dato) => {
     if (datoABusacar === `id`) {
         let filtrados = ``
         for (let i = 0; i < jaulas.length; i++) {
-            if (jaulas[i].tipo === `parental`) {
                 jaulas[i].parents.forEach(element => {
                     if (element.idRaton == dato) {
                         filtrados = element
                     }
                 })
-            } else if (jaulas[i].tipo === `noparental`) {
                 jaulas[i].pups.forEach(element => {
                     if (element.idRaton == dato) {
                         filtrados = element
                     }
                 })
+        }
+        return filtrados
+    } else if (datoABusacar === `barcode`) {
+        let filtrados = []
+        for (let i = 0; i < jaulas.length; i++) {
+            if (jaulas[i].tipo === `parental`) {
+                jaulas[i].parents.forEach(element => {
+                    if (element.actualBarcode == dato) {
+                        filtrados.push(element)
+                    }
+                })
+            } else if (jaulas[i].tipo === `noparental`) {
+                jaulas[i].pups.forEach(element => {
+                    if (element.actualBarcode == dato) {
+                        filtrados.push(element)
+                    }
+                })
             }
         }
         return filtrados
-    }
-let filtrados = []
-if (datoABusacar === `barcode`) {
-    for (let i = 0; i < jaulas.length; i++) {
-        if (jaulas[i].tipo === `parental`) {
+    } else if (datoABusacar === `previousBarcode`) {
+        let filtrados = []
+        for (let i = 0; i < jaulas.length; i++) {
             jaulas[i].parents.forEach(element => {
-                if (element.actualBarcode == dato) {
-                    filtrados.push(element)
-                }
+                element.previousBarcode.forEach(element2 => {
+                    if (dato === element2) {
+                        filtrados.push(element)
+                    }
+                });
             })
-        } else if (jaulas[i].tipo === `noparental`) {
             jaulas[i].pups.forEach(element => {
-                if (element.actualBarcode == dato) {
-                    filtrados.push(element)
+                element.previousBarcode.forEach(element2 => {
+                    if (dato === element2) {
+                        filtrados.push(element)
+                    }
+                });
+            })
+        }
+        return filtrados
+    } else if (datoABusacar === `gen`) {
+        let filtrados = []
+        let aFiltrarR = []
+        for (let i = 0; i < jaulas.length; i++) {
+            jaulas[i].parents.forEach(element => {
+                coincidencias = 0
+                let validaCantidad = []
+                for (var i = 0; i < element.gen.length; i++) {
+                    if (dato[i] === element.gen[i] || dato[i] === `any`) {
+                        validaCantidad.push(dato[i])
+                        coincidencias++
+                    }
+                }
+                let ratonAFiltrar = element.idRaton
+                if (validaCantidad.length === 4) {
+                    aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
                 }
             })
         }
-    }
-} else if (datoABusacar === `previousBarcode`) {
-    for (let i = 0; i < jaulas.length; i++) {
-        jaulas[i].parents.forEach(element => {
-            if (element.previousBarcode == dato) {
-                filtrados.push(element)
-            }
-        })
-        jaulas[i].pups.forEach(element => {
-            if (element.previousBarcode == dato) {
-                filtrados.push(element)
-            }
-        })
-    }
-} else if (datoABusacar === `gen`) {
-    // let cuatro = []
-    // let tres = []
-    // let dos = []
-    // let uno = []
-    let aFiltrarR = []
-    for (let i = 0; i < jaulas.length; i++) {
-        jaulas[i].parents.forEach(element => {
-            coincidencias = 0
-            let validaCantidad = []
-            for (var i = 0; i < element.gen.length; i++) {
-                if (dato[i] === element.gen[i] || dato[i] === `any`) {
-                    validaCantidad.push(dato[i])
-                    coincidencias++
-                }
-            }
-            let ratonAFiltrar = element.idRaton
-            if (validaCantidad.length === 4) {
-                aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
-            }
-        })
+        aFiltrarR.forEach(element => {
+            aFiltrarR.push(filtaRatones(`id`, element.id))
+        });
+
+        filtrados = aFiltrarR.filter(e => e.gender != undefined)
+        return filtrados
     }
 
-    aFiltrarR.forEach(element => {
-        aFiltrarR.push(filtaRatones(`id`,element.id))
+}
+
+const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
+    let ratonABuscar = ``
+    jaulaAnterior = buscaJaula(buscaJaulaAnterior)
+    proximaJaula = buscaJaula(buscaNuevaJaula)
+    jaulaAnterior.pups.forEach(element => {
+        if (element.earCode == buscaOrejaRaton) {
+            ratonABuscar = element
+        }
     });
-
-    filtrados = aFiltrarR.filter(e => e.gender != undefined)
-
-    // cuatro = aFiltrarR.filter(e => e.coincidencias === 4)
-    // tres = aFiltrarR.filter(e => e.coincidencias === 3)
-    // dos = aFiltrarR.filter(e => e.coincidencias === 2)
-    // uno = aFiltrarR.filter(e => e.coincidencias === 1)
-    // filtrados = cuatro
-    // // const ultimaComprobacion = (caja) => {
-    // cuatro.forEach(element => {
-    //     cuatro.push(filtaRatonesXId(element.id))
-    // });
-    // cuatro = cuatro.filter(e => e.gender != undefined)
-    // // }
-
-    // if (cuatro.length >= 1) {
-    //     filtrados = cuatro
-    // } else if (tres.length >= 1) {
-    //     filtrados = ultimaComprobacion(tres)
-    // } else if (dos.length >= 1) {
-    //     filtrados = ultimaComprobacion(dos)
-    // } else if (uno.length >= 1) {
-    //     filtrados = ultimaComprobacion(uno)
-    // }
+    if (proximaJaula.tipo === `parental` && jaulaAnterior.tipo === `noparental` && ratonABuscar !== ``) {
+        ratonABuscar.previousBarcode.push(buscaJaulaAnterior)
+        ratonABuscar.tipo = `parent`
+        ratonABuscar.actualBarcode = Number(buscaNuevaJaula)
+        buscaJaula(buscaNuevaJaula).parents.push(ratonABuscar)
+        let ratonABorrar = jaulaAnterior.pups.indexOf(ratonABuscar)
+        jaulaAnterior.pups.splice(ratonABorrar, 1)
+    } else {
+        console.log(`Las jaulas no son correctas`)
+    }
 }
-return filtrados
-}
-
 ////////////////////////////////////////////////////////////////////////
 
 const muestraRatones = (datoABusacar, dato) => {
@@ -226,6 +227,7 @@ const muestraJaulas = (element) => {
 
 const ingresaDatos = document.querySelector(`#ingresaDatos`)
 const visualizaDatos = document.querySelector(`#visualizaDatos`)
+const moverRaton = document.querySelector(`#moverRaton`)
 const title = document.querySelector(`#title`)
 const formSelect = document.querySelector(`#formSelect`)
 const formSelect2 = document.querySelector(`#formSelect2`)
@@ -340,28 +342,31 @@ const creaParental = () => {
                 <label for="genA">Gen 1</label>
                 <select class="form-select mx-2" aria-label="" id="genA">
                     <option value="none">None</option>
-                    <option value="genA1">1</option>
-                    <option value="genA2">2</option>
-                    <option value="genA3">3</option>
+                    <option value="CAG-CRE">CAG-CRE</option>
+                    <option value="COL1A1-CRE">COL1A1-CRE</option>
+                    <option value="COL1A2-CRE">COL1A2-CRE</option>
+                    <option value="ACTA2-CRE">ACTA2-CRE</option>
+                    <option value="Nestin-CRE">Nestin-CRE</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genAS">
                 <option value="none">None</option>
-                    <option value="genAS1">+</option>
-                    <option value="genAS2">-</option>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
                 </select>
             </div>
             <div class="mt-3 d-flex flex-row">
                 <label for="genB">Gen 2</label>
                 <select class="form-select mx-2" aria-label="" id="genB">
                 <option value="none">None</option>
-                    <option value="genB1">4</option>
-                    <option value="genB2">5</option>
-                    <option value="genB3">6</option>
+                    <option value="LAIR1 FLOXED">LAIR1 FLOXED</option>
+                    <option value="COL1A1 FLOXED">COL1A1 FLOXED</option>
+                    <option value="Tomato">Tomato</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genBS">
                 <option value="none">None</option>
-                    <option value="genBS1">+</option>
-                    <option value="genBS2">-</option>
+                    <option value="++">++</option>
+                    <option value="+-">+-</option>
+                    <option value="--">--</option>
                 </select>
             </div>
             </div>
@@ -380,7 +385,7 @@ const creaParental = () => {
         var dateRaton = fechaToArray(date.value)
         var genRaton = [genA.value, genAS.value, genB.value, genBS.value]
         var genderRaron = gender.value
-        buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parental`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
+        buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         idRaton++
         mainContainer.innerHTML = '';
     })
@@ -427,8 +432,8 @@ const creaNoParental = () => {
         var genderRaron = gender.value
         var criasRaton = amount.value
         for (i = 0; i < criasRaton; i++) {
-            buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, `missing`, dateRaton, genderRaron, asignEarCode(i), barcodeRaton, barcodePadresRaton))
-            buscaJaula(barcodePadresRaton).pups.push(new Raton(idRaton, `pup`, `missing`, dateRaton, genderRaron, asignEarCode(i), barcodeRaton, `none`))
+            buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, `missing`, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
+            buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
             idRaton++
         }
         mainContainer.innerHTML = '';
@@ -503,38 +508,37 @@ const buscaGenesRaton = () => {
     const div = document.createElement(`div`)
     mainContainer.innerHTML = ''
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
-            <div class="mt-3 d-flex flex-row">
-                <label for="genA">Gen 1</label>
-                <select class="form-select mx-2" aria-label="" id="genA">
-                    <option value="any">Any</option>
-                    <option value="none">None</option>
-                    <option value="genA1">1</option>
-                    <option value="genA2">2</option>
-                    <option value="genA3">3</option>
-                </select>
-                <select class="form-select mx-2" aria-label="" id="genAS">
-                <option value="any">Any</option>
-                <option value="none">None</option>
-                    <option value="genAS1">+</option>
-                    <option value="genAS2">-</option>
-                </select>
-            </div>
-            <div class="mt-3 d-flex flex-row">
-                <label for="genB">Gen 2</label>
-                <select class="form-select mx-2" aria-label="" id="genB">
-                <option value="any">Any</option>
-                <option value="none">None</option>
-                    <option value="genB1">4</option>
-                    <option value="genB2">5</option>
-                    <option value="genB3">6</option>
-                </select>
-                <select class="form-select mx-2" aria-label="" id="genBS">
-                <option value="any">Any</option>
-                <option value="none">None</option>
-                    <option value="genBS1">+</option>
-                    <option value="genBS2">-</option>
-                </select>
-            </div>
+    <div class="mt-3 d-flex flex-row">
+    <label for="genA">Gen 1</label>
+    <select class="form-select mx-2" aria-label="" id="genA">
+        <option value="none">None</option>
+        <option value="CAG-CRE">CAG-CRE</option>
+        <option value="COL1A1-CRE">COL1A1-CRE</option>
+        <option value="COL1A2-CRE">COL1A2-CRE</option>
+        <option value="ACTA2-CRE">ACTA2-CRE</option>
+        <option value="Nestin-CRE">Nestin-CRE</option>
+    </select>
+    <select class="form-select mx-2" aria-label="" id="genAS">
+    <option value="none">None</option>
+        <option value="+">+</option>
+        <option value="-">-</option>
+    </select>
+</div>
+<div class="mt-3 d-flex flex-row">
+    <label for="genB">Gen 2</label>
+    <select class="form-select mx-2" aria-label="" id="genB">
+    <option value="none">None</option>
+        <option value="LAIR1 FLOXED">LAIR1 FLOXED</option>
+        <option value="COL1A1 FLOXED">COL1A1 FLOXED</option>
+        <option value="Tomato">Tomato</option>
+    </select>
+    <select class="form-select mx-2" aria-label="" id="genBS">
+    <option value="none">None</option>
+        <option value="++">++</option>
+        <option value="+-">+-</option>
+        <option value="--">--</option>
+    </select>
+</div>
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>`
     mainContainer.append(div)
@@ -585,8 +589,92 @@ const searchJaula = () => {
     })
 }
 
+
+const creaFormularioMoverRaton = () => {
+    const div = document.createElement(`div`)
+    formSelect2.innerHTML = ''
+    formSelect3.innerHTML = ''
+    mainContainer.innerHTML = ''
+    div.innerHTML = `
+<form id="myForm" action="" class="myForm mt-3">
+<div class="d-flex flex-row">
+<input type="number" class="form-control mx-2" placeholder="Jaula anterior" id="esJaulaAnterior">
+    <select class="form-select mx-2" aria-label="" id="orejaRaton">
+        <option value="">Raton a mover</option>
+        <option value="1R">1R</option>
+        <option value="2R">2R</option>
+        <option value="1L">1L</option>
+        <option value="2L">2L</option>
+        <option value="1R1L">1R1L</option>
+    </select>
+</div>
+<div class="d-flex flex-row  mt-3">
+<input type="number" class="form-control mx-2" placeholder="Nueva Jaula" id="nuevaJaula">
+</div>
+<button type="submit" class="btn btn-primary mt-3">Submit</button>
+
+</form>`
+    mainContainer.append(div);
+    myForm.addEventListener(`submit`, (e) => {
+        e.preventDefault();
+        let buscaJaulaAnterior = esJaulaAnterior.value
+        let buscaOrejaRaton = orejaRaton.value
+        let buscaNuevaJaula = nuevaJaula.value
+        mueveRaton(buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula)
+        mainContainer.innerHTML = ''
+    })
+}
+
 ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
+moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
 title.addEventListener(`click`, limpiaHoja)
+
+const calculaGenes2 = (barcodePadresRaton) => {
+    const padres = filtaRatones(`barcode`, barcodePadresRaton)
+    let valorGenPP = 0
+    let valorGenP1 = 0
+    let valorGenp2 = 0
+
+    if (padres[0].gen[1] === "+" && padres[1].gen[1] === "+") {
+        valorGenPP = 0.75
+    } else if (padres[0].gen[1] === "+" && padres[1].gen[1] === "-" || padres[0].gen[1] === "-" && padres[1].gen[1] === "+") {
+        valorGenPP = 0.5
+    }
+
+    const daValorGen = (parent) => {
+        if (padres[parent].gen[3] === `++`) {
+            if (parent === 0) {
+                valorGenP1 = 1
+            } else if (parent === 1) {
+                valorGenp2 = 1
+            }
+        } else if (padres[parent].gen[3] === `+-`) {
+            if (parent === 0) {
+                valorGenP1 = 0.5
+            } else if (parent === 1) {
+                valorGenp2 = 0.5
+            }
+        }
+    }
+
+    daValorGen(0, valorGenP1)
+    daValorGen(1, valorGenp2)
+
+    // probabilidad ++
+    resultado1 = valorGenP1 * valorGenp2
+    // posibilidad de --
+    resultado2 = (1 - valorGenP1) * (1 - valorGenp2)
+    // posibilidad +-
+    resultado3 = 1 - resultado1 - resultado2
+    console.log(valorGenPP)
+    console.log(`${resultado1}, ${resultado2}, ${resultado3}`)
+}
+
+
+
+
+
+
 
 
