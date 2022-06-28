@@ -1,8 +1,6 @@
 let jaulas = []
 jaulas = JSON.parse(localStorage.getItem(`jaulas`))
 
-
-
 let idRaton = 40
 let idJaula = 40
 let selectJaula = document.querySelector(`#selectJaula`)
@@ -10,7 +8,6 @@ let selectRaton = document.querySelector(`#selectRaton`)
 let selectParental = document.querySelector(`#selectParental`)
 let selectNoParental = document.querySelector(`#selectNoParental`)
 let tipoRatonValue = ``
-
 class Jaula {
     constructor(idJaula, tipo, date, barcode, cageName,) {
         this.idJaula = idJaula
@@ -22,7 +19,6 @@ class Jaula {
         this.pups = []
     }
 }
-
 class Raton {
     constructor(idRaton, tipo, gen, birth, gender, earCode, actualBarcode, previousBarcode) {
         this.idRaton = idRaton
@@ -65,41 +61,42 @@ const asignEarCode = (element) => {
     }
 }
 
+const asd = (tipo) => {
+    for (let i = 0; i < jaulas.length; i++) {
+        jaulas[i].parents.forEach(element, tipo => {
+            if (element[tipo] == dato) {
+                filtrados = element
+            }
+        })
+
+        jaulas[i].pups.forEach(element => {
+            if (element[tipo] == dato) {
+                filtrados = element
+            }
+        })
+    }
+}
+
 //////////////////////////////////////////
 
-
-const filtaRatones = (datoABusacar, dato) => {
+const filtaRatones = (datoABusacar, dato, tipo) => {
     if (datoABusacar === `id`) {
         let filtrados = ``
-        for (let i = 0; i < jaulas.length; i++) {
-                jaulas[i].parents.forEach(element => {
-                    if (element.idRaton == dato) {
-                        filtrados = element
-                    }
-                })
-                jaulas[i].pups.forEach(element => {
-                    if (element.idRaton == dato) {
-                        filtrados = element
-                    }
-                })
-        }
+        asd(`idRaton`)
         return filtrados
     } else if (datoABusacar === `barcode`) {
         let filtrados = []
         for (let i = 0; i < jaulas.length; i++) {
-            if (jaulas[i].tipo === `parental`) {
-                jaulas[i].parents.forEach(element => {
-                    if (element.actualBarcode == dato) {
-                        filtrados.push(element)
-                    }
-                })
-            } else if (jaulas[i].tipo === `noparental`) {
-                jaulas[i].pups.forEach(element => {
-                    if (element.actualBarcode == dato) {
-                        filtrados.push(element)
-                    }
-                })
-            }
+            jaulas[i].parents.forEach(element => {
+                if (element.actualBarcode == dato) {
+                    filtrados.push(element)
+                }
+            })
+            jaulas[i].pups.forEach(element => {
+                if (element.actualBarcode == dato) {
+                    filtrados.push(element)
+                }
+            })
         }
         return filtrados
     } else if (datoABusacar === `previousBarcode`) {
@@ -124,22 +121,26 @@ const filtaRatones = (datoABusacar, dato) => {
     } else if (datoABusacar === `gen`) {
         let filtrados = []
         let aFiltrarR = []
-        for (let i = 0; i < jaulas.length; i++) {
-            jaulas[i].parents.forEach(element => {
-                coincidencias = 0
-                let validaCantidad = []
-                for (var i = 0; i < element.gen.length; i++) {
-                    if (dato[i] === element.gen[i] || dato[i] === `any`) {
-                        validaCantidad.push(dato[i])
-                        coincidencias++
+        tipo = tipo
+        const filtraGenes = (tipo) => {
+            for (let i = 0; i < jaulas.length; i++) {
+                jaulas[i][tipo].forEach(element => {
+                    coincidencias = 0
+                    let validaCantidad = []
+                    for (var i = 0; i < element.gen.length; i++) {
+                        if (dato[i] === element.gen[i] || dato[i] === `any`) {
+                            validaCantidad.push(dato[i])
+                            coincidencias++
+                        }
                     }
-                }
-                let ratonAFiltrar = element.idRaton
-                if (validaCantidad.length === 4) {
-                    aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
-                }
-            })
+                    let ratonAFiltrar = element.idRaton
+                    if (validaCantidad.length === 4) {
+                        aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
+                    }
+                })
+            }
         }
+        filtraGenes(tipo)
         aFiltrarR.forEach(element => {
             aFiltrarR.push(filtaRatones(`id`, element.id))
         });
@@ -147,7 +148,6 @@ const filtaRatones = (datoABusacar, dato) => {
         filtrados = aFiltrarR.filter(e => e.gender != undefined)
         return filtrados
     }
-
 }
 
 const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
@@ -170,11 +170,65 @@ const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
         console.log(`Las jaulas no son correctas`)
     }
 }
+
+const calculaGenes2 = (barcodePadresRaton) => {
+    const padres = filtaRatones(`barcode`, barcodePadresRaton)
+    let valorGenPP = 0
+    let valorGenP1 = 0
+    let valorGenp2 = 0
+    let valorGen1 = ``
+    let valorGen2 = ``
+
+    if (padres[0].gen[0] === padres[1].gen[0]) {
+        valorGen1 = padres[0].gen[0]
+    }
+
+    if (padres[0].gen[2] === padres[1].gen[2]) {
+        valorGen2 = padres[0].gen[2]
+    }
+
+    if (padres[0].gen[1] === "+" && padres[1].gen[1] === "+") {
+        valorGenPP = 0.75
+    } else if (padres[0].gen[1] === "+" && padres[1].gen[1] === "-" || padres[0].gen[1] === "-" && padres[1].gen[1] === "+") {
+        valorGenPP = 0.5
+    }
+
+    const daValorGen = (parent) => {
+        if (padres[parent].gen[3] === `++`) {
+            if (parent === 0) {
+                valorGenP1 = 1
+            } else if (parent === 1) {
+                valorGenp2 = 1
+            }
+        } else if (padres[parent].gen[3] === `+-`) {
+            if (parent === 0) {
+                valorGenP1 = 0.5
+            } else if (parent === 1) {
+                valorGenp2 = 0.5
+            }
+        }
+    }
+    daValorGen(0, valorGenP1)
+    daValorGen(1, valorGenp2)
+    const porCien = (numero) => {
+        return numero * 100
+    }
+
+    // probabilidad ++
+    resultado1 = valorGenP1 * valorGenp2
+    // posibilidad de --
+    resultado2 = (1 - valorGenP1) * (1 - valorGenp2)
+    // posibilidad +-
+    resultado3 = 1 - resultado1 - resultado2
+    genArmado = [valorGen1,`+:${porCien(valorGenPP)}%`,valorGen2,`++:${porCien(resultado1)}% / --:${porCien(resultado2)}% / +-:${porCien(resultado3)}%`]
+    return genArmado
+}
+
 ////////////////////////////////////////////////////////////////////////
 
-const muestraRatones = (datoABusacar, dato) => {
+const muestraRatones = (datoABusacar, dato, tipo) => {
     mainContainer.innerHTML = ``
-    filtrados = filtaRatones(datoABusacar, dato)
+    filtrados = filtaRatones(datoABusacar, dato, tipo)
     filtrados.reverse().forEach(raton => {
         const div = document.createElement(`div`)
         div.innerHTML = ` <div id=card class="card blue__border">
@@ -341,7 +395,6 @@ const creaParental = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genA">Gen 1</label>
                 <select class="form-select mx-2" aria-label="" id="genA">
-                    <option value="none">None</option>
                     <option value="CAG-CRE">CAG-CRE</option>
                     <option value="COL1A1-CRE">COL1A1-CRE</option>
                     <option value="COL1A2-CRE">COL1A2-CRE</option>
@@ -349,7 +402,6 @@ const creaParental = () => {
                     <option value="Nestin-CRE">Nestin-CRE</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genAS">
-                <option value="none">None</option>
                     <option value="+">+</option>
                     <option value="-">-</option>
                 </select>
@@ -357,13 +409,11 @@ const creaParental = () => {
             <div class="mt-3 d-flex flex-row">
                 <label for="genB">Gen 2</label>
                 <select class="form-select mx-2" aria-label="" id="genB">
-                <option value="none">None</option>
                     <option value="LAIR1 FLOXED">LAIR1 FLOXED</option>
                     <option value="COL1A1 FLOXED">COL1A1 FLOXED</option>
                     <option value="Tomato">Tomato</option>
                 </select>
                 <select class="form-select mx-2" aria-label="" id="genBS">
-                <option value="none">None</option>
                     <option value="++">++</option>
                     <option value="+-">+-</option>
                     <option value="--">--</option>
@@ -388,6 +438,7 @@ const creaParental = () => {
         buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         idRaton++
         mainContainer.innerHTML = '';
+        formSelect3.innerHTML = '';
     })
 }
 
@@ -431,8 +482,9 @@ const creaNoParental = () => {
         var dateRaton = fechaToArray(date.value)
         var genderRaron = gender.value
         var criasRaton = amount.value
+        var gen = calculaGenes2(barcodePadresRaton)
         for (i = 0; i < criasRaton; i++) {
-            buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, `missing`, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
+            buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
             buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
             idRaton++
         }
@@ -509,9 +561,15 @@ const buscaGenesRaton = () => {
     mainContainer.innerHTML = ''
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
     <div class="mt-3 d-flex flex-row">
+    <select class="form-select mx-2" aria-label="" id="tipo">
+        <option value="parents">Parent</option>
+        <option value="pups">Pups</option>
+    </select>
+    </div>
+    <div class="mt-3 d-flex flex-row">
     <label for="genA">Gen 1</label>
     <select class="form-select mx-2" aria-label="" id="genA">
-        <option value="none">None</option>
+    <option value="any">Any</option>
         <option value="CAG-CRE">CAG-CRE</option>
         <option value="COL1A1-CRE">COL1A1-CRE</option>
         <option value="COL1A2-CRE">COL1A2-CRE</option>
@@ -519,7 +577,7 @@ const buscaGenesRaton = () => {
         <option value="Nestin-CRE">Nestin-CRE</option>
     </select>
     <select class="form-select mx-2" aria-label="" id="genAS">
-    <option value="none">None</option>
+    <option value="any">Any</option>
         <option value="+">+</option>
         <option value="-">-</option>
     </select>
@@ -527,13 +585,13 @@ const buscaGenesRaton = () => {
 <div class="mt-3 d-flex flex-row">
     <label for="genB">Gen 2</label>
     <select class="form-select mx-2" aria-label="" id="genB">
-    <option value="none">None</option>
+    <option value="any">Any</option>
         <option value="LAIR1 FLOXED">LAIR1 FLOXED</option>
         <option value="COL1A1 FLOXED">COL1A1 FLOXED</option>
         <option value="Tomato">Tomato</option>
     </select>
     <select class="form-select mx-2" aria-label="" id="genBS">
-    <option value="none">None</option>
+    <option value="any">Any</option>
         <option value="++">++</option>
         <option value="+-">+-</option>
         <option value="--">--</option>
@@ -546,7 +604,7 @@ const buscaGenesRaton = () => {
         formSelect3.innerHTML = ''
         e.preventDefault();
         genAll = [genA.value, genAS.value, genB.value, genBS.value]
-        muestraRatones(`gen`, genAll)
+        muestraRatones(`gen`, genAll, tipo.value)
     })
 }
 
@@ -589,7 +647,6 @@ const searchJaula = () => {
     })
 }
 
-
 const creaFormularioMoverRaton = () => {
     const div = document.createElement(`div`)
     formSelect2.innerHTML = ''
@@ -629,50 +686,6 @@ ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
 moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
 title.addEventListener(`click`, limpiaHoja)
-
-const calculaGenes2 = (barcodePadresRaton) => {
-    const padres = filtaRatones(`barcode`, barcodePadresRaton)
-    let valorGenPP = 0
-    let valorGenP1 = 0
-    let valorGenp2 = 0
-
-    if (padres[0].gen[1] === "+" && padres[1].gen[1] === "+") {
-        valorGenPP = 0.75
-    } else if (padres[0].gen[1] === "+" && padres[1].gen[1] === "-" || padres[0].gen[1] === "-" && padres[1].gen[1] === "+") {
-        valorGenPP = 0.5
-    }
-
-    const daValorGen = (parent) => {
-        if (padres[parent].gen[3] === `++`) {
-            if (parent === 0) {
-                valorGenP1 = 1
-            } else if (parent === 1) {
-                valorGenp2 = 1
-            }
-        } else if (padres[parent].gen[3] === `+-`) {
-            if (parent === 0) {
-                valorGenP1 = 0.5
-            } else if (parent === 1) {
-                valorGenp2 = 0.5
-            }
-        }
-    }
-
-    daValorGen(0, valorGenP1)
-    daValorGen(1, valorGenp2)
-
-    // probabilidad ++
-    resultado1 = valorGenP1 * valorGenp2
-    // posibilidad de --
-    resultado2 = (1 - valorGenP1) * (1 - valorGenp2)
-    // posibilidad +-
-    resultado3 = 1 - resultado1 - resultado2
-    console.log(valorGenPP)
-    console.log(`${resultado1}, ${resultado2}, ${resultado3}`)
-}
-
-
-
 
 
 
