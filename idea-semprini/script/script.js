@@ -61,43 +61,32 @@ const asignEarCode = (element) => {
     }
 }
 
-const asd = (tipo) => {
-    for (let i = 0; i < jaulas.length; i++) {
-        jaulas[i].parents.forEach(element, tipo => {
-            if (element[tipo] == dato) {
-                filtrados = element
-            }
-        })
 
-        jaulas[i].pups.forEach(element => {
-            if (element[tipo] == dato) {
-                filtrados = element
-            }
-        })
-    }
-}
 
 //////////////////////////////////////////
 
+const busquedaR = (jaula, dato, datoABusacar, aFiltrarR) => {
+    jaulas.filter(e => {
+            let encontrados = e[jaula].filter(e => e[datoABusacar] == dato)
+            encontrados.length > 0 && aFiltrarR.push(encontrados)
+    })
+}
+
+
 const filtaRatones = (datoABusacar, dato, tipo) => {
     if (datoABusacar === `id`) {
+        let aFiltrarR = []
         let filtrados = ``
-        asd(`idRaton`)
+        busquedaR(`parents`, dato, `idRaton`, aFiltrarR)
+        busquedaR(`pups`, dato, `idRaton`, aFiltrarR)
+        filtrados = aFiltrarR[0][0]
         return filtrados
     } else if (datoABusacar === `barcode`) {
         let filtrados = []
-        for (let i = 0; i < jaulas.length; i++) {
-            jaulas[i].parents.forEach(element => {
-                if (element.actualBarcode == dato) {
-                    filtrados.push(element)
-                }
-            })
-            jaulas[i].pups.forEach(element => {
-                if (element.actualBarcode == dato) {
-                    filtrados.push(element)
-                }
-            })
-        }
+        let aFiltrarR = []
+        busquedaR(`parents`, dato, `actualBarcode`, aFiltrarR)
+        busquedaR(`pups`, dato, `actualBarcode`, aFiltrarR)
+        filtrados = aFiltrarR[0]
         return filtrados
     } else if (datoABusacar === `previousBarcode`) {
         let filtrados = []
@@ -220,7 +209,7 @@ const calculaGenes2 = (barcodePadresRaton) => {
     resultado2 = (1 - valorGenP1) * (1 - valorGenp2)
     // posibilidad +-
     resultado3 = 1 - resultado1 - resultado2
-    genArmado = [valorGen1,`+:${porCien(valorGenPP)}%`,valorGen2,`++:${porCien(resultado1)}% / --:${porCien(resultado2)}% / +-:${porCien(resultado3)}%`]
+    genArmado = [valorGen1, `+:${porCien(valorGenPP)}%`, valorGen2, `++:${porCien(resultado1)}% / --:${porCien(resultado2)}% / +-:${porCien(resultado3)}%`]
     return genArmado
 }
 
