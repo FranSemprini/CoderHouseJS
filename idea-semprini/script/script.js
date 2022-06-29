@@ -1,5 +1,4 @@
-let jaulas = []
-jaulas = JSON.parse(localStorage.getItem(`jaulas`))
+jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
 
 let idRaton = 40
 let idJaula = 40
@@ -61,8 +60,6 @@ const asignEarCode = (element) => {
     }
 }
 
-
-
 //////////////////////////////////////////
 
 const busquedaR = (jaula, dato, datoABusacar, aFiltrarR) => {
@@ -71,7 +68,6 @@ const busquedaR = (jaula, dato, datoABusacar, aFiltrarR) => {
             encontrados.length > 0 && aFiltrarR.push(encontrados)
     })
 }
-
 
 const filtaRatones = (datoABusacar, dato, tipo) => {
     if (datoABusacar === `id`) {
@@ -165,16 +161,9 @@ const calculaGenes2 = (barcodePadresRaton) => {
     let valorGenPP = 0
     let valorGenP1 = 0
     let valorGenp2 = 0
-    let valorGen1 = ``
-    let valorGen2 = ``
 
-    if (padres[0].gen[0] === padres[1].gen[0]) {
-        valorGen1 = padres[0].gen[0]
-    }
-
-    if (padres[0].gen[2] === padres[1].gen[2]) {
-        valorGen2 = padres[0].gen[2]
-    }
+    let valorGen1 = padres[0].gen[0] === padres[1].gen[0] ?? padres[0].gen[0]
+    let valorGen2 = padres[0].gen[2] === padres[1].gen[2] ?? padres[0].gen[2]
 
     if (padres[0].gen[1] === "+" && padres[1].gen[1] === "+") {
         valorGenPP = 0.75
