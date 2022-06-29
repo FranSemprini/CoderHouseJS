@@ -1,4 +1,4 @@
-jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
+let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
 
 let idRaton = 40
 let idJaula = 40
@@ -358,6 +358,9 @@ const creaRaton = () => {
     })
 }
 
+
+
+
 const creaParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
@@ -664,8 +667,3 @@ ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
 moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
 title.addEventListener(`click`, limpiaHoja)
-
-
-
-
-
