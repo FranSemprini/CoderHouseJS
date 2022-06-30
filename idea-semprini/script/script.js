@@ -64,8 +64,8 @@ const asignEarCode = (element) => {
 
 const busquedaR = (jaula, dato, datoABusacar, aFiltrarR) => {
     jaulas.filter(e => {
-            let encontrados = e[jaula].filter(e => e[datoABusacar] == dato)
-            encontrados.length > 0 && aFiltrarR.push(encontrados)
+        let encontrados = e[jaula].filter(e => e[datoABusacar] == dato)
+        encontrados.length > 0 && aFiltrarR.push(encontrados)
     })
 }
 
@@ -162,8 +162,8 @@ const calculaGenes2 = (barcodePadresRaton) => {
     let valorGenP1 = 0
     let valorGenp2 = 0
 
-    let valorGen1 = padres[0].gen[0] === padres[1].gen[0] ?? padres[0].gen[0]
-    let valorGen2 = padres[0].gen[2] === padres[1].gen[2] ?? padres[0].gen[2]
+    let valorGen1 = padres[0].gen[0] === padres[1].gen[0] && padres[0].gen[0]
+    let valorGen2 = padres[0].gen[2] === padres[1].gen[2] && padres[0].gen[2]
 
     if (padres[0].gen[1] === "+" && padres[1].gen[1] === "+") {
         valorGenPP = 0.75
@@ -202,6 +202,28 @@ const calculaGenes2 = (barcodePadresRaton) => {
     return genArmado
 }
 
+const buscaJaulasVacias = (tipo) => {
+    let tipoJaula = tipo === `parental` ? `parents` : `pups`
+    jaulasVacias = jaulas.filter(e => e.tipo === tipo)
+    jaulasVacias = jaulasVacias.filter(e => e[tipoJaula].length < 2)
+    return jaulasVacias
+}
+
+const creOptVacias = (tipo, id, barcode) => {
+    let aMostrar = tipo === `` ? buscaJaula(barcode).pups : buscaJaulasVacias(tipo)
+    let sel = document.querySelector(id)
+    let fragment = document.createDocumentFragment()
+    if (sel.length < 1) {
+        aMostrar.forEach(element => {
+            let opt = document.createElement(`option`)
+            opt.innerHTML = tipo === `` ?  element.earCode : element.barcode
+            opt.value = tipo === `` ? element.earCode : element.barcode
+            fragment.appendChild(opt)
+        })
+    }
+    sel.appendChild(fragment)
+}
+
 ////////////////////////////////////////////////////////////////////////
 
 const muestraRatones = (datoABusacar, dato, tipo) => {
@@ -210,7 +232,7 @@ const muestraRatones = (datoABusacar, dato, tipo) => {
     filtrados.reverse().forEach(raton => {
         const div = document.createElement(`div`)
         div.innerHTML = ` <div id=card class="card blue__border">
-        <h1 class="card__title">RATON - ${raton.tipo}</h1>
+        <h1 class="card__title">RATON - ${raton.tipo.toUpperCase()}</h1>
         <section id="cardRow" class="card__row light__grey">
         <p id="raton__previousBarcode">Barcode: ${raton.actualBarcode}</p>
         <p id="raton__previousBarcode">Previous Barcode: ${raton.previousBarcode}</p>
@@ -358,16 +380,14 @@ const creaRaton = () => {
     })
 }
 
-
-
-
 const creaParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
     mainContainer.innerHTML = '';
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
-            <div class="d-flex flex-row">
-                <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
+            <div class="d-flex flex-row align-items-center">
+            <label for="barcode">Barcode</label>
+            <select class="form-select mx-2" aria-label="barcode" id="barcode"></select>
                 <select class="form-select mx-2" aria-label="" id="gender">
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -410,6 +430,7 @@ const creaParental = () => {
             </div>
         </form>`
     mainContainer.append(div)
+    creOptVacias(`parental`, `#barcode`)
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
         var barcodeRaton = barcode.value
@@ -428,9 +449,10 @@ const creaNoParental = () => {
     tipoRatonValue = ``
     mainContainer.innerHTML = '';
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
-    <div class="d-flex flex-row">
-        <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
-        <select class="form-select mx-2" aria-label="" id="gender">
+    <div class="d-flex flex-row align-items-center">
+    <label for="barcode">Barcode</label>
+    <select class="form-select mx-2" aria-label="barcode" id="barcode"></select>
+    <select class="form-select mx-2" aria-label="" id="gender">
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
@@ -456,6 +478,7 @@ const creaNoParental = () => {
     </div>
 </form>`
     mainContainer.append(div)
+    creOptVacias(`noparental`, `#barcode`)
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
         var barcodeRaton = barcode.value
@@ -498,7 +521,7 @@ const searchRaton = () => {
     formSelect3.innerHTML = ''
     mainContainer.innerHTML = ''
     div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-row align-items-center">
         <select class="form-select mx-2" aria-label="" id="aBuscar">
             <option value="">Valor a Buscar</option>
             <option value="barcodeAntetior">Barcode Anterior</option>
@@ -524,7 +547,7 @@ const buscarBarcodeAnteriorRaton = () => {
     mainContainer.innerHTML = ''
     div.innerHTML = `
             <form id="myForm2" action="" class="myForm mt-3">
-            <div class="d-flex flex-row">
+            <div class="d-flex flex-row align-items-center">
                 <input type="number" class="form-control mx-2" placeholder="Barcode" id="data">
             </div>
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
@@ -637,22 +660,19 @@ const creaFormularioMoverRaton = () => {
 <form id="myForm" action="" class="myForm mt-3">
 <div class="d-flex flex-row">
 <input type="number" class="form-control mx-2" placeholder="Jaula anterior" id="esJaulaAnterior">
-    <select class="form-select mx-2" aria-label="" id="orejaRaton">
-        <option value="">Raton a mover</option>
-        <option value="1R">1R</option>
-        <option value="2R">2R</option>
-        <option value="1L">1L</option>
-        <option value="2L">2L</option>
-        <option value="1R1L">1R1L</option>
-    </select>
+<select class="form-select mx-2" aria-label="" id="orejaRaton"></select>
 </div>
 <div class="d-flex flex-row  mt-3">
-<input type="number" class="form-control mx-2" placeholder="Nueva Jaula" id="nuevaJaula">
+<label for="nuevaJaula">Mover a Jaula:</label>
+<select class="form-select mx-2" aria-label="nuevaJaula" id="nuevaJaula"></select>
 </div>
 <button type="submit" class="btn btn-primary mt-3">Submit</button>
-
 </form>`
     mainContainer.append(div);
+    creOptVacias(`parental`, `#nuevaJaula`)
+    myForm.addEventListener(`change`, () => {
+        creOptVacias(``, `#orejaRaton`, esJaulaAnterior.value)
+    })
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();
         let buscaJaulaAnterior = esJaulaAnterior.value
@@ -667,3 +687,5 @@ ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
 visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
 moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
 title.addEventListener(`click`, limpiaHoja)
+
+
