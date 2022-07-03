@@ -165,7 +165,7 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
     }
 }
 
-// FUNCIONES LOGICAS DE ASIGNACIONES 
+// FUNCIONES LOGICAS DE ASIGNACION Y DE COMPROBACION 
 
 const asignEarCode = (element) => {
     switch (element) {
@@ -229,7 +229,6 @@ const calculaGenes2 = (barcodePadresRaton) => {
 const asignGen = () => {
     let toCheck = buscaJaula(barcodeCheck.value)
     let toDisable = document.querySelectorAll(`.toDisable`)
-    console.log(toCheck.parents.length)
     if (toCheck.parents.length !== 0) {
         let genAF = document.querySelector('#genA')
         let genBF = document.querySelector('#genB')
@@ -260,6 +259,40 @@ const creOptVacias = (tipo, id, barcode) => {
     sel.appendChild(fragment)
 }
 
+const formValidation = (data, validacion) => {
+    let sel = document.querySelector(data)
+    let bsub = document.querySelector(`#bsubmit`)
+    if (validacion === `jaula`) {
+        sel.addEventListener(`change`, () => {
+            let jaula = buscaJaula(sel.value)
+            jaula === undefined ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
+        })
+    } 
+    if (validacion === `noparental`) {
+        let aValidar = document.querySelectorAll(`.aValidar`)
+        aValidar.forEach(e => e.addEventListener(`change`, () => {
+            let jaula = buscaJaula(sel.value)
+            if (jaula) {
+                jaula.parents.length === 2 && amount.value !== `` ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
+            } else {
+                bsub.classList.add(`disabled`)
+            }
+        }))
+    } 
+    if (validacion === `mover`) {
+        let aValidar = document.querySelectorAll(`.aValidar`)
+        aValidar.forEach(e => e.addEventListener(`change`, () => {
+            let jaula = buscaJaula(sel.value)
+            if (jaula) {
+                buscaJaula(sel.value).pups.length >= 1 ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
+            } else {
+                bsub.classList.add(`disabled`)
+            }
+        }))
+    }
+}
+
+
 // FUNCION PARA MOVER RATONES DE JAULA
 
 const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
@@ -279,16 +312,10 @@ const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
         buscaJaula(buscaNuevaJaula).parents.push(ratonABuscar)
         let ratonABorrar = jaulaAnterior.pups.indexOf(ratonABuscar)
         jaulaAnterior.pups.splice(ratonABorrar, 1)
-    } else {
-        console.log(`Las jaulas no son correctas`)
     }
 }
 
 /////////////////////////////////////////////////////////////////
 
-title.addEventListener(`click`, limpiaHoja(0, 1, 2, 3))
-ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
-visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
-moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
 
 

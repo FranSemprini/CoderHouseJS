@@ -50,3 +50,9 @@ const muestraJaulas = (element) => {
         })
     });
 };
+
+
+title.addEventListener(`click`, limpiaHoja(0, 1, 2, 3))
+ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
+visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
+moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
