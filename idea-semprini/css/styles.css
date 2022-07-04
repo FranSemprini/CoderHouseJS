@@ -1,13 +1,3 @@
-* {
-  margin: 0px;
-  padding: 0;
-}
-
-ul {
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
 .header {
   text-align: center;
   background-color: #355070;
@@ -106,25 +96,6 @@ ul {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.containeQr {
-  display: flex;
-}
-
-.qrCam {
-  width: 100%;
-  height: auto;
-}
-
-.camIcon {
-  background-color: rgb(215, 196, 221);
-  padding: 5px;
-  margin: 5px;
-  border-radius: 5px;
-}
-.camIcon > i {
-  color: black;
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -292,7 +292,6 @@ const formValidation = (data, validacion) => {
     }
 }
 
-
 // FUNCION PARA MOVER RATONES DE JAULA
 
 const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {

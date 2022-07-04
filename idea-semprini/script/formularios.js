@@ -40,8 +40,9 @@ const creaJaula = () => {
           </select>
     
             </div>
-            <div class="mt-3">
+            <div class="mt-3 d-flex align-items-center">
                 <input type="number" class="form-control" placeholder="Barcode" id="barcode">
+                <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
             </div>
             <div class="mt-3">
                 <input type="text" id="nombre" class="form-control" placeholder="Name">
@@ -55,6 +56,10 @@ const creaJaula = () => {
             </div>
         </form>`
     mainContainer.append(div)
+    const camButton = document.querySelector(`#camButton`)
+    camButton.addEventListener(`click`, (e) => {
+        html5QrcodeScanner.render(onScanSuccess);
+    })
     formValidation(`#barcode`, `jaula`)
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();

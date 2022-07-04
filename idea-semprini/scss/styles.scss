@@ -115,3 +115,23 @@ ul {
     justify-content: center;
     align-items: center;
 }
+
+.containeQr {
+    display: flex;
+}
+
+.qrCam {
+    width: 100%;
+    height: auto;
+    
+}
+
+.camIcon {
+    background-color: rgb(215, 196, 221);
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    &>i {
+        color: black;
+    }
+}
