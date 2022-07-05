@@ -1,4 +1,5 @@
-let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
+// let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
+let jaulas = []
 
 let idRaton = 40
 let idJaula = 40
@@ -36,6 +37,7 @@ class Raton {
 // FUNCIONES BASICAS //
 
 const limpiaHoja = (...options) => {
+    html5QrcodeScanner.clear();
     options.forEach(e => {
         switch (e) {
             case 0:
@@ -229,18 +231,20 @@ const calculaGenes2 = (barcodePadresRaton) => {
 const asignGen = () => {
     let toCheck = buscaJaula(barcodeCheck.value)
     let toDisable = document.querySelectorAll(`.toDisable`)
-    if (toCheck.parents.length !== 0) {
-        let genAF = document.querySelector('#genA')
-        let genBF = document.querySelector('#genB')
-        genAF.value = toCheck.parents[0].gen[0]
-        genBF.value = toCheck.parents[0].gen[2]
-        toDisable.forEach(element => {
-            element.setAttribute(`disabled`, "")
-        });
-    } else {
-        toDisable.forEach(element => {
-            element.removeAttribute(`disabled`, "")
-        });
+    if (toCheck) {
+        if (toCheck.parents.length !== 0) {
+            let genAF = document.querySelector('#genA')
+            let genBF = document.querySelector('#genB')
+            genAF.value = toCheck.parents[0].gen[0]
+            genBF.value = toCheck.parents[0].gen[2]
+            toDisable.forEach(element => {
+                element.setAttribute(`disabled`, "")
+            });
+        } else {
+            toDisable.forEach(element => {
+                element.removeAttribute(`disabled`, "")
+            });
+        }
     }
 }
 
@@ -267,7 +271,7 @@ const formValidation = (data, validacion) => {
             let jaula = buscaJaula(sel.value)
             jaula === undefined ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
         })
-    } 
+    }
     if (validacion === `noparental`) {
         let aValidar = document.querySelectorAll(`.aValidar`)
         aValidar.forEach(e => e.addEventListener(`change`, () => {
@@ -278,7 +282,7 @@ const formValidation = (data, validacion) => {
                 bsub.classList.add(`disabled`)
             }
         }))
-    } 
+    }
     if (validacion === `mover`) {
         let aValidar = document.querySelectorAll(`.aValidar`)
         aValidar.forEach(e => e.addEventListener(`change`, () => {
@@ -314,7 +318,24 @@ const mueveRaton = (buscaJaulaAnterior, buscaOrejaRaton, buscaNuevaJaula) => {
     }
 }
 
-/////////////////////////////////////////////////////////////////
+// CAMARA Y QRS
 
+const addFromCamera = () => {
+    const camButton = document.querySelector(`#camButton`)
+    camButton.addEventListener(`click`, (e) => {
+        const containerQr = document.querySelector(`.containeQr`)
+        containerQr.classList.remove(`invisible`)
+        containerQr.classList.add(`visible`)
+        html5QrcodeScanner.render(onScanSuccess);
+    })
+    barcode = document.querySelector(`#barcode`)
+}
 
+closeQr = document.querySelector(`#closeQr`)
+closeQr.addEventListener(`click`, () => {
+    html5QrcodeScanner.clear();
+    const containerQr = document.querySelector(`.containeQr`)
+    containerQr.classList.remove(`visible`)
+    containerQr.classList.add(`invisible`)
 
+})

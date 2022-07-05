@@ -41,7 +41,7 @@ const creaJaula = () => {
     
             </div>
             <div class="mt-3 d-flex align-items-center">
-                <input type="number" class="form-control" placeholder="Barcode" id="barcode">
+                <input type="number" class="form-control barcodeToBeScanned" placeholder="Barcode" id="barcode">
                 <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
             </div>
             <div class="mt-3">
@@ -56,11 +56,8 @@ const creaJaula = () => {
             </div>
         </form>`
     mainContainer.append(div)
-    const camButton = document.querySelector(`#camButton`)
-    camButton.addEventListener(`click`, (e) => {
-        html5QrcodeScanner.render(onScanSuccess);
-    })
-    formValidation(`#barcode`, `jaula`)
+    addFromCamera()
+    formValidation(`#barcode`, `jaula`) 
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();
         let tipoJula = tipo.value
@@ -111,7 +108,7 @@ const creaParental = () => {
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
             <div class="d-flex flex-row align-items-center">
             <label for="barcode">Barcode</label>
-            <select class="form-select mx-2" aria-label="barcode" id="barcode"></select>
+            <select class="form-select mx-2" aria-label="barcode" id="barcode2"></select>
                 <select class="form-select mx-2" aria-label="" id="gender">
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -156,16 +153,16 @@ const creaParental = () => {
             </div>
         </form>`
     mainContainer.append(div)
-    creOptVacias(`parental`, `#barcode`)
+    creOptVacias(`parental`, `#barcode2`)
     formValidation(`#barcodeRaton`, `parental`)
-    barcodeCheck = document.querySelector(`#barcode`)
+    barcodeCheck = document.querySelector(`#barcode2`)
     asignGen()
     barcodeCheck.addEventListener(`change`, (e) => {
         asignGen()
     })
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
-        var barcodeRaton = barcode.value
+        var barcodeRaton = barcode2.value
         var dateRaton = fechaToArray(date.value)
         var genRaton = [genA.value, genAS.value, genB.value, genBS.value]
         var genderRaron = gender.value
@@ -187,7 +184,6 @@ const creaNoParental = () => {
     limpiaHoja(0)
     div.innerHTML = `<form id="myForm2" action="" class="myForm mt-3">
     <div class="d-flex flex-row align-items-center">
-    <label for="barcode">Barcode</label>
     <select class="form-select mx-2" aria-label="barcode" id="barcode"></select>
     <select class="form-select mx-2" aria-label="" id="gender">
             <option value="male">Male</option>
@@ -196,7 +192,8 @@ const creaNoParental = () => {
     </div>
 
     <div class="d-flex flex-row mt-3">
-        <input type="number" class="form-control mx-2 aValidar" placeholder="Barcode Padres" id="barcodePadres">
+    <input type="number" class="form-control mx-2 aValidar barcodeToBeScanned" placeholder="Barcode Padres" id="barcodePadres">
+    <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
         <select class="form-select mx-2 aValidar" aria-label="" id="amount">
             <option value="">Crias</option>
             <option value="1">1</option>
@@ -216,6 +213,7 @@ const creaNoParental = () => {
 </form>`
     mainContainer.append(div)
     creOptVacias(`noparental`, `#barcode`)
+    addFromCamera()
     formValidation(`#barcodePadres`, `noparental`)
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
@@ -291,11 +289,13 @@ const buscarBarcodeAnteriorRaton = () => {
     div.innerHTML = `
             <form id="myForm2" action="" class="myForm mt-3">
             <div class="d-flex flex-row align-items-center">
-                <input type="number" class="form-control mx-2" placeholder="Barcode" id="data">
+                <input type="number" class="form-control mx-2 barcodeToBeScanned" placeholder="Barcode" id="data">
+                <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
             </div>
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>`
     mainContainer.append(div)
+    addFromCamera()
     myForm2.addEventListener(`submit`, (e) => {
         limpiaHoja(3)
         e.preventDefault();
@@ -366,11 +366,13 @@ const searchJaula = () => {
         <option value="parental">Parental</option>
         <option value="noparental">No Parental</option>
     </select>
-    <input type="number" class="form-control mx-2" placeholder="Barcode" id="barcode">
+    <input type="number" class="form-control mx-2 barcodeToBeScanned" "placeholder="Barcode" id="barcode">
+    <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
 </div>
 <button type="submit" class="btn btn-primary mt-3">Submit</button>
 </form>`
     mainContainer.append(div);
+    addFromCamera()
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();
         let tipoJulaABuscar = tipo.value
@@ -400,7 +402,8 @@ const creaFormularioMoverRaton = () => {
     div.innerHTML = `
 <form id="myForm" action="" class="myForm mt-3">
 <div class="d-flex flex-row">
-<input type="number" class="form-control mx-2 aValidar" placeholder="Jaula anterior" id="esJaulaAnterior">
+<input type="number" class="form-control mx-2 aValidar barcodeToBeScanned" "placeholder="Jaula anterior" id="esJaulaAnterior">
+<a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
 <select class="form-select mx-2 aValidar" aria-label="" id="orejaRaton"></select>
 </div>
 <div class="d-flex flex-row  mt-3">
@@ -416,6 +419,7 @@ const creaFormularioMoverRaton = () => {
         orejaRaton.innerHTML = ``
         creOptVacias(``, `#orejaRaton`, esJaulaAnterior.value)
     })
+    addFromCamera()
     formValidation(`#esJaulaAnterior`, `mover`)
     myForm.addEventListener(`submit`, (e) => {
         e.preventDefault();

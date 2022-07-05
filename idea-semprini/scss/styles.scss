@@ -116,8 +116,14 @@ ul {
     align-items: center;
 }
 
+
 .containeQr {
-    display: flex;
+    flex-direction: row, !important;
+    position: absolute;
+    top: 44px;
+    height: 100vw;
+    width: 100%;
+    background-color: white;
 }
 
 .qrCam {
@@ -134,4 +140,12 @@ ul {
     &>i {
         color: black;
     }
+}
+
+.invisible {
+    display: none;
+}
+
+.visible {
+    display: block;
 }

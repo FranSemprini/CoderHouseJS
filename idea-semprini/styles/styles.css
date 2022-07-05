@@ -109,7 +109,12 @@ ul {
 }
 
 .containeQr {
-  display: flex;
+  flex-direction: row, !important;
+  position: absolute;
+  top: 44px;
+  height: 100vw;
+  width: 100%;
+  background-color: white;
 }
 
 .qrCam {
@@ -125,6 +130,14 @@ ul {
 }
 .camIcon > i {
   color: black;
+}
+
+.invisible {
+  display: none;
+}
+
+.visible {
+  display: block;
 }
 
 /*# sourceMappingURL=styles.css.map */

@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="script/formularios.js"></script>
+    <script defer src="script/qr.js"></script>
     <script defer src="script/script.js"></script>
     <script defer src="script/renderizado.js"></script>
-    <script defer src="script/qr.js"></script>
+
     <script src="script/html5-qrcode.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -39,8 +40,11 @@
         <div id="mainContainer"></div>
     </main>
 
-    <div class="containeQr">
-        <div class="qrCam" id="reader"></div>
+    <div class="containeQr invisible">
+        <div>
+            <div><i id="closeQr" class="fa fa-times fa-lg" aria-hidden="true"></i></div>
+            <div class="qrCam" id="reader"></div>
+        </div>
     </div>
     
 </body>
