@@ -174,11 +174,11 @@ const creaParental = () => {
     })
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
-        const barcodeRaton = barcode2.value
-        const dateRaton = fechaToArray(date.value)
-        const genRaton = [genA.value, genAS.value, genB.value, genBS.value]
-        const genderRaron = gender.value
-        const parentsBefore = buscaJaula(barcodeRaton).parents.length
+        let barcodeRaton = barcode2.value
+        let dateRaton = fechaToArray(date.value)
+        let genRaton = [genA.value, genAS.value, genB.value, genBS.value]
+        let genderRaron = gender.value
+        let parentsBefore = buscaJaula(barcodeRaton).parents.length
         buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         idRaton++
         if (buscaJaula(barcodeRaton).parents.length === parentsBefore + 1) {
@@ -282,42 +282,13 @@ const creaFormularioBusqueda = () => {
 const searchRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0, 3)
-    div.innerHTML = `    <form id="myForm2" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
-        <div class="d-flex w-100 align-items-center gap-1">
-            <label for="barcode">Barcode</label>
-            <select class="form-select" aria-label="barcode" id="barcode"></select>
-        </div>
-        <div class="d-flex w-100 align-items-center gap-1">
-            <select class="form-select" aria-label="" id="gender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select>
-        </div>
-    </div>
-    <div class="d-flex flex-row gap-3">
-        <div class="d-flex w-100 align-items-center gap-1">
-            <input type="number" class="form-control aValidar barcodeToBeScanned" placeholder="Barcode Padres"
-                id="barcodePadres">
-            <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
-        </div>
-        <div class="d-flex w-100 align-items-center gap-1">
-            <select class="form-select aValidar" aria-label="" id="amount">
-                <option value="">Crias</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </div>
-    </div>
-    <div class="d-flex w-100 align-items-center gap-1">
-        <label for="date">Date</label>
-        <input id="date" class="form-control" type="date" />
-    </div>
-    <div class="d-flex w-100 justify-content-center">
-        <button id="bsubmit" type="submit" class="btn btn-primary mt-3 disabled">Submit</button>
+        <select class="form-select" aria-label="" id="aBuscar">
+            <option value="">Valor a Buscar</option>
+            <option value="barcodeAntetior">Barcode Anterior</option>
+            <option value="gen">Gen</option>
+        </select>
     </div>
 </form>`
     formSelect3.append(div)
