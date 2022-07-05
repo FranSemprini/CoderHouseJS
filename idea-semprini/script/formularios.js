@@ -83,9 +83,9 @@ const creaJaula = () => {
 const creaRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0, 3)
-    div.innerHTML = `   <form id="myForm" action="" class="myForm mt-3 gap-3">
-    <div class="d-flex flex-row align-items-center gap-3">
-        <select class="form-select" aria-label="" id="aBuscar">
+    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    <div class="d-flex flex-row">
+        <select class="form-select mx-2" aria-label="" id="aBuscar">
             <option value="">Raton a crear</option>
             <option value="selectParental">Parent</option>
             <option value="selectNoParental">Pup</option>
@@ -238,13 +238,13 @@ const creaNoParental = () => {
     formValidation(`#barcodePadres`, `noparental`)
     myForm2.addEventListener(`submit`, (e) => {
         e.preventDefault();
-        const barcodeRaton = barcode.value
-        const barcodePadresRaton = barcodePadres.value
-        const dateRaton = fechaToArray(date.value)
-        const genderRaron = gender.value
-        const criasRaton = amount.value
-        const gen = calculaGenes2(barcodePadresRaton)
-        const pupsBefore = buscaJaula(barcodeRaton).pups.length
+        let barcodeRaton = barcode.value
+        let barcodePadresRaton = barcodePadres.value
+        let dateRaton = fechaToArray(date.value)
+        let genderRaron = gender.value
+        let criasRaton = amount.value
+        let gen = calculaGenes2(barcodePadresRaton)
+        let pupsBefore = buscaJaula(barcodeRaton).pups.length
         for (i = 0; i < criasRaton; i++) {
             buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
             buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
