@@ -36,6 +36,11 @@ class Raton {
 
 // FUNCIONES BASICAS //
 
+const limpiar = () => {
+    limpiaHoja(0, 1, 2, 3)
+    cerrarCamara()
+}
+
 const limpiaHoja = (...options) => {
     html5QrcodeScanner.clear();
     options.forEach(e => {
@@ -144,7 +149,7 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
                 jaulas[i][tipo].forEach(element => {
                     coincidencias = 0
                     let validaCantidad = []
-                    for (var i = 0; i < element.gen.length; i++) {
+                    for (let i = 0; i < element.gen.length; i++) {
                         if (dato[i] === element.gen[i] || dato[i] === `any`) {
                             validaCantidad.push(dato[i])
                             coincidencias++
@@ -231,21 +236,24 @@ const calculaGenes2 = (barcodePadresRaton) => {
 const asignGen = () => {
     let toCheck = buscaJaula(barcodeCheck.value)
     let toDisable = document.querySelectorAll(`.toDisable`)
-    if (toCheck) {
-        if (toCheck.parents.length !== 0) {
-            let genAF = document.querySelector('#genA')
-            let genBF = document.querySelector('#genB')
-            genAF.value = toCheck.parents[0].gen[0]
-            genBF.value = toCheck.parents[0].gen[2]
-            toDisable.forEach(element => {
-                element.setAttribute(`disabled`, "")
-            });
-        } else {
-            toDisable.forEach(element => {
-                element.removeAttribute(`disabled`, "")
-            });
-        }
-    }
+            if (toCheck) {
+                if (toCheck.parents.length !== 0) {
+                    let genAF = document.querySelector('#genA')
+                    let genBF = document.querySelector('#genB')
+                    let gender = document.querySelector(`#gender`)
+                    genAF.value = toCheck.parents[0].gen[0]
+                    genBF.value = toCheck.parents[0].gen[2]
+                    toCheck.parents[0].gender === `male` ? gender.value = 'female': `male`
+                    toDisable.forEach(element => {
+                        element.setAttribute(`disabled`, "")
+                    });
+                } else {
+                    toDisable.forEach(element => {
+                        element.removeAttribute(`disabled`, "")
+                    });
+                }
+            }
+
 }
 
 const creOptVacias = (tipo, id, barcode) => {
@@ -331,11 +339,18 @@ const addFromCamera = () => {
     barcode = document.querySelector(`#barcode`)
 }
 
-closeQr = document.querySelector(`#closeQr`)
-closeQr.addEventListener(`click`, () => {
+const cerrarCamara = () => {
     html5QrcodeScanner.clear();
     const containerQr = document.querySelector(`.containeQr`)
     containerQr.classList.remove(`visible`)
     containerQr.classList.add(`invisible`)
+}
 
-})
+// ////////////////////////////////
+
+
+titulo.addEventListener(`click`, limpiar)
+ingresaDatos.addEventListener(`click`, creaFormularioIngreso)
+visualizaDatos.addEventListener(`click`, creaFormularioBusqueda)
+moverRaton.addEventListener(`click`, creaFormularioMoverRaton)
+

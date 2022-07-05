@@ -14,6 +14,11 @@ ul {
     color: #BCC4DB;
 }
 
+#titulo > a {
+        text-decoration: none;
+        color: inherit;
+}
+
 .header__nav {
     background-color: #6D597A;
     font-size: 20px;
@@ -42,7 +47,6 @@ ul {
 .selectForm2 {
     background-color: #e5d4f2;
     font-size: 18px;
-
 }
 
 .form__ul>li {
@@ -108,28 +112,31 @@ ul {
     margin: 0 5px 0 5px;
 }
 
+
+
 .myForm {
-    width: 100%;
+    margin: 0 20px 0 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: stretch;
 }
 
 
 .containeQr {
-    flex-direction: row, !important;
+    flex-direction: row,  !important;
     position: absolute;
     top: 44px;
-    height: 100vw;
+    height: 100%;
     width: 100%;
     background-color: white;
 }
 
 .qrCam {
-    width: 100%;
+    width: 90%;
     height: auto;
-    
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.63);
 }
 
 .camIcon {
@@ -137,6 +144,7 @@ ul {
     padding: 5px;
     margin: 5px;
     border-radius: 5px;
+
     &>i {
         color: black;
     }

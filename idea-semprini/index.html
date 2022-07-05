@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="script/formularios.js"></script>
     <script defer src="script/qr.js"></script>
-    <script defer src="script/script.js"></script>
     <script defer src="script/renderizado.js"></script>
+    <script defer src="script/script.js"></script>
 
     <script src="script/html5-qrcode.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -22,8 +22,8 @@
 
 <body>
     <header class="header">
-        <div id='title'>
-            <h1>IDEA SEMPRINI</h1>
+        <div id='titulo'>
+            <a href="javascript:void(0)"><h1>IDEA SEMPRINI</h1></a>
         </div>
         <nav class="header__nav">
             <ul class="d-flex flex-wrap justify-content-around header__ul">
@@ -41,12 +41,15 @@
     </main>
 
     <div class="containeQr invisible">
-        <div>
-            <div><i id="closeQr" class="fa fa-times fa-lg" aria-hidden="true"></i></div>
+        <div class="d-flex flex-column align-items-center">
+            <div class="d-flex align-items-baseline justify-content-center"><i id="closeQr" class="py-3 fa fa-times fa-2xl m-lg-2"  style="color:black" aria-hidden="true"></i></div>
             <div class="qrCam" id="reader"></div>
         </div>
     </div>
-    
+
+
+ 
+
 </body>
 
 </html>
