@@ -1,5 +1,5 @@
 var html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader", { fps: 10, qrbox: undefined, aspectRatio: 2, rememberLastUsedCamera: true});
+    "reader", { fps: 10, qrbox: undefined, aspectRatio:1, focusMode:"continuous",formatsToSupport:exchange_scannerFormats,advanced:[{zoom:isMobile.Android ? 1.5 : 2.0}],experimentalFeatures:{useBarCodeDetectorIfSupported:true}});
         
 onScanSuccess = (decodedText, decodedResult) => {
     let barcode = ``
