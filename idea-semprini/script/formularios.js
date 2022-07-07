@@ -262,7 +262,7 @@ const creaNoParental = () => {
 // FORMULARIOS DE BUSQUEDA
 
 const creaFormularioBusqueda = () => {
-    limpiaHoja(0, 1, 2)
+    limpiaHoja(0, 1, 2, 3)
     const div = document.createElement('div')
     div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
     <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>

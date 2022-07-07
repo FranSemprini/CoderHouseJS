@@ -1,5 +1,5 @@
 // let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
-let jaulas = []
+let jaulas = getFromFirebase()
 
 let idRaton = 40
 let idJaula = 40

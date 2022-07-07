@@ -39,8 +39,8 @@ const muestraJaulas = (element) => {
     <p id="jaula__fecha">Fecha: ${date}</p>
     </section>
     <section id="cardRow" class="card__row light__grey">
-    <p id="jaula__parents">Parents: ${parents.length}</p>
-    <p id="jaula__">Pups: ${pups.length}</p>
+    ${parents ? `<p id="jaula__">Parents: ${parents.length}</p>` : `<p id="jaula__">Parents: 0</p>`}
+    ${pups ? `<p id="jaula__">Pups: ${pups.length}</p>` : `<p id="jaula__">Pups: 0</p>`}
     </section></div>
     `
         mainContainer.append(div)
