@@ -16,6 +16,7 @@ let database = firebase.database();
 let retrieve = firebase.database().ref();
 
 jaulas = []
+
 const getFromFirebase = () => {
   retrieve.on('value', (snapshot) => {
     let data = snapshot.val();

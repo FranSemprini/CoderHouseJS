@@ -178,6 +178,7 @@ const creaParental = () => {
         let dateRaton = fechaToArray(date.value)
         let genRaton = [genA.value, genAS.value, genB.value, genBS.value]
         let genderRaron = gender.value
+        clearFalse(barcodeRaton, `parents`)
         let parentsBefore = buscaJaula(barcodeRaton).parents.length
         buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         idRaton++
@@ -244,9 +245,11 @@ const creaNoParental = () => {
         let genderRaron = gender.value
         let criasRaton = amount.value
         let gen = calculaGenes2(barcodePadresRaton)
+        clearFalse(barcodeRaton, `pups`)
         let pupsBefore = buscaJaula(barcodeRaton).pups.length
         for (i = 0; i < criasRaton; i++) {
             buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
+            buscaJaula(barcodeRaton).pups[i].previousBarcode[0] === false && buscaJaula(barcodeRaton).pups[i].previousBarcode.splice(0,1)
             buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
             idRaton++
         }
@@ -421,17 +424,16 @@ const searchJaula = () => {
         let barcodeABuscar = barcode.value
         let jaulasAMostrar = []
         mainContainer.innerHTML = '';
-        jaulas.forEach(element => {
-            if (element.tipo === tipoJulaABuscar && element.barcode === barcodeABuscar) {
-                jaulasAMostrar.push(element)
-            } else if (tipoJulaABuscar === `` && element.barcode === barcodeABuscar) {
-                jaulasAMostrar.push(element)
-            } else if (element.tipo === tipoJulaABuscar && barcodeABuscar === ``) {
-                jaulasAMostrar.push(element)
+            if (tipoJulaABuscar !== "todos" && barcodeABuscar !== "") {
+                jaulasAMostrar = jaulas.filter(e => e.tipo === tipoJulaABuscar)
+                jaulasAMostrar = jaulasAMostrar.filter(e => e.barcode === barcodeABuscar)
+            } else if (tipoJulaABuscar === "todos" && barcodeABuscar !== "") {
+                jaulasAMostrar = jaulas.filter(e => e.barcode === barcodeABuscar)
+            } else if (tipoJulaABuscar !== "todos" && barcodeABuscar === "") {
+                jaulasAMostrar = jaulas.filter(e => e.tipo === tipoJulaABuscar)
             } else if (tipoJulaABuscar === `todos`) {
-                jaulasAMostrar.push(element)
+                jaulasAMostrar = jaulas
             }
-        })
         muestraJaulas(jaulasAMostrar)
     })
 }
@@ -467,9 +469,12 @@ const creaFormularioMoverRaton = () => {
     const esJaulaAnterior = document.querySelector(`#esJaulaAnterior`)
     creOptVacias(`parental`, `#nuevaJaula`)
     esJaulaAnterior.addEventListener(`change`, () => {
-        orejaRaton.innerHTML = ``
-        creOptVacias(``, `#orejaRaton`, esJaulaAnterior.value)
+        if (buscaJaula(esJaulaAnterior.value) != undefined && buscaJaula(esJaulaAnterior.value).pups[0] !== false ) {
+            orejaRaton.innerHTML = ``
+            creOptVacias(``, `#orejaRaton`, esJaulaAnterior.value)
+        }
     })
+
     addFromCamera()
     formValidation(`#esJaulaAnterior`, `mover`)
     myForm.addEventListener(`submit`, (e) => {
@@ -478,11 +483,12 @@ const creaFormularioMoverRaton = () => {
         let buscaOrejaRaton = orejaRaton.value
         let jaulaNuevaValue = nuevaJaula.value
         let pupsBefore = buscaJaula(jaulaAnteriorValue).pups.length
+        clearFalse(jaulaNuevaValue, `parents`)
         let parentsBefore = buscaJaula(jaulaNuevaValue).parents.length
         mueveRaton(jaulaAnteriorValue, buscaOrejaRaton, jaulaNuevaValue)
         mainContainer.innerHTML = ''
         if (buscaJaula(jaulaAnteriorValue).pups.length  === pupsBefore - 1 && buscaJaula(jaulaNuevaValue).parents.length === parentsBefore + 1) {
-            toastify(`El rato con codigo ${buscaOrejaRaton} se movio como padre a la jaula parental ${jaulaNuevaValue}`, "linear-gradient(to right, #00b09b, #96c93d)") 
+            toastify(`El raton con codigo ${buscaOrejaRaton} se movio como padre a la jaula parental ${jaulaNuevaValue}`, "linear-gradient(to right, #00b09b, #96c93d)") 
         } else {
             toastify(` asdasd `, "linear-gradient(to right, #00b09b, #96c93d)")
         }

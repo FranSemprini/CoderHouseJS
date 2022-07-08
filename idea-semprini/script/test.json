@@ -1,6 +1,0 @@
-[
-    {"idJaula":20,"tipo":"parental","date":[2022,6,26],"barcode":"111","cageName":"Uno","parents":[{"idRaton":40,"tipo":"parent","birth":[2022,7,7],"gen":["CAG-CRE","+","LAIR1 FLOXED","++"],"gender":"male","earCode":"none","actualBarcode":111,"previousBarcode":[]},{"idRaton":41,"tipo":"parent","birth":[2022,7,5],"gen":["CAG-CRE","-","LAIR1 FLOXED","+-"],"gender":"female","earCode":"none","actualBarcode":111,"previousBarcode":[]}],"pups":[]},
-    {"idJaula":21,"tipo":"parental","date":[2022,6,26],"barcode":"222","cageName":"Dos","parents":[],"pups":[]},{"idJaula":22,"tipo":"noparental","date":[2022,6,26],"barcode":"333","cageName":"Tres","parents":[],"pups":[{"idRaton":42,"tipo":"pup","birth":[2022,7,14],"gen":["CAG-CRE","+:50%","LAIR1 FLOXED","++:50% / --:0% / +-:50%"],"gender":"male","earCode":"1R","actualBarcode":333,"previousBarcode":["111"]},
-    {"idRaton":43,"tipo":"pup","birth":[2022,7,14],"gen":["CAG-CRE","+:50%","LAIR1 FLOXED","++:50% / --:0% / +-:50%"],"gender":"male","earCode":"2R","actualBarcode":333,"previousBarcode":["111"]},{"idRaton":44,"tipo":"pup","birth":[2022,7,14],"gen":["CAG-CRE","+:50%","LAIR1 FLOXED","++:50% / --:0% / +-:50%"],"gender":"male","earCode":"1L","actualBarcode":333,"previousBarcode":["111"]}]},
-    {"idJaula":23,"tipo":"noparental","date":[2022,6,26],"barcode":"444","cageName":"Cuatro","parents":[],"pups":[]}
-]

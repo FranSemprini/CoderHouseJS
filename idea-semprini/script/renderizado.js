@@ -8,7 +8,7 @@ const muestraRatones = (datoABusacar, dato, tipo) => {
         <h1 class="card__title">RATON - ${tipo.toUpperCase()}</h1>
         <section id="cardRow" class="card__row light__grey">
         <p id="raton__previousBarcode">Barcode: ${actualBarcode}</p>
-        <p id="raton__previousBarcode">Previous Barcode: ${previousBarcode}</p>
+        ${previousBarcode[0] !== false ? ` <p id="raton__previousBarcode">Previous Barcode: ${previousBarcode}</p>` : `<p id="raton__previousBarcode">Previous Barcode: None</p>`}
         </section>
         <section id="cardRow" class="card__row">
         <p id="raton__bitrth">Birth: ${birth}</p>
@@ -35,12 +35,12 @@ const muestraJaulas = (element) => {
     <p id="jaula__cageName">Cage Name: ${cageName}</p>
     </section>
     <section id="cardRow" class="card__row">
-    <p id="jaula__tipo">Tipo: ${tipo}</p>
+    ${tipo === `parental` ? `<p id="jaula__tipo">Tipo: Parental</p>` :` <p id="jaula__tipo">Tipo: Pups</p>`}
     <p id="jaula__fecha">Fecha: ${date}</p>
     </section>
     <section id="cardRow" class="card__row light__grey">
-    ${parents ? `<p id="jaula__">Parents: ${parents.length}</p>` : `<p id="jaula__">Parents: 0</p>`}
-    ${pups ? `<p id="jaula__">Pups: ${pups.length}</p>` : `<p id="jaula__">Pups: 0</p>`}
+    ${parents[0] !== false ? `<p id="jaula__">Parents: ${parents.length}</p>` : `<p id="jaula__">Parents: 0</p>`}
+    ${pups[0] !== false ? `<p id="jaula__">Pups: ${pups.length}</p>` : `<p id="jaula__">Pups: 0</p>`}
     </section></div>
     `
         mainContainer.append(div)

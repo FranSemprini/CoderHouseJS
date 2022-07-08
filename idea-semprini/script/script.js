@@ -1,5 +1,4 @@
 // let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
-let jaulas = getFromFirebase()
 
 let idRaton = 40
 let idJaula = 40
@@ -17,12 +16,12 @@ class Jaula {
         this.date = date
         this.barcode = barcode
         this.cageName = cageName
-        this.parents = []
-        this.pups = []
+        this.parents = [false]
+        this.pups = [false]
     }
 }
 class Raton {
-    constructor(idRaton, tipo, gen, birth, gender, earCode, actualBarcode, previousBarcode) {
+    constructor(idRaton, tipo, gen, birth, gender, earCode, actualBarcode) {
         this.idRaton = idRaton
         this.tipo = tipo
         this.birth = birth
@@ -30,7 +29,7 @@ class Raton {
         this.gender = gender
         this.earCode = earCode
         this.actualBarcode = Number(actualBarcode)
-        this.previousBarcode = []
+        this.previousBarcode = [false]
     }
 }
 
@@ -174,6 +173,10 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
 
 // FUNCIONES LOGICAS DE ASIGNACION Y DE COMPROBACION 
 
+const clearFalse = (jaula, e) => {
+        buscaJaula(jaula)[e][0] === false && buscaJaula(jaula)[e].splice(0,1)
+}
+
 const asignEarCode = (element) => {
     switch (element) {
         case 0:
@@ -237,7 +240,7 @@ const asignGen = () => {
     let toCheck = buscaJaula(barcodeCheck.value)
     let toDisable = document.querySelectorAll(`.toDisable`)
             if (toCheck) {
-                if (toCheck.parents.length !== 0) {
+                if (toCheck.parents[0] !== false) {
                     let genAF = document.querySelector('#genA')
                     let genBF = document.querySelector('#genB')
                     let gender = document.querySelector(`#gender`)
@@ -260,7 +263,7 @@ const creOptVacias = (tipo, id, barcode) => {
     let aMostrar = tipo === `` ? buscaJaula(barcode).pups : buscaJaulasVacias(tipo)
     let sel = document.querySelector(id)
     let fragment = document.createDocumentFragment()
-    if (sel.length < 1) {
+    if (sel.length < 1 ) {
         aMostrar.forEach(element => {
             let opt = document.createElement(`option`)
             opt.innerHTML = tipo === `` ? element.earCode : element.barcode
@@ -296,7 +299,7 @@ const formValidation = (data, validacion) => {
         aValidar.forEach(e => e.addEventListener(`change`, () => {
             let jaula = buscaJaula(sel.value)
             if (jaula) {
-                buscaJaula(sel.value).pups.length >= 1 ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
+                buscaJaula(sel.value).pups.length >= 1? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
             } else {
                 bsub.classList.add(`disabled`)
             }
