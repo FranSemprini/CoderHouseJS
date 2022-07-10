@@ -2,7 +2,7 @@ const muestraRatones = (datoABusacar, dato, tipo) => {
     mainContainer.innerHTML = ``
     filtrados = filtaRatones(datoABusacar, dato, tipo)
     filtrados.reverse().forEach(raton => {
-        const {tipo, actualBarcode, previousBarcode, birth, earCode, gen, gender} = raton
+        const { tipo, actualBarcode, previousBarcode, birth, earCode, gen, gender } = raton
         const div = document.createElement(`div`)
         div.innerHTML = ` <div id=card class="card blue__border">
         <h1 class="card__title">RATON - ${tipo.toUpperCase()}</h1>
@@ -26,16 +26,17 @@ const muestraRatones = (datoABusacar, dato, tipo) => {
 const muestraJaulas = (element) => {
     mainContainer.innerHTML = ''
     element.forEach(jaula => {
-        const {barcode, cageName, tipo, date, parents, pups} = jaula
-        const div = document.createElement('div')
-        div.innerHTML = ` <div id=card class="card blue__border">
+        if (Object.keys(jaula).length > 2) {
+            const { barcode, cageName, tipo, date, parents, pups } = jaula
+            const div = document.createElement('div')
+            div.innerHTML = ` <div id=card class="card blue__border">
     <h1 class="card__title">JAULA</h1>
     <section id="cardRow" class="card__row light__grey">
     <p id="jaula__barcode">Barcode: ${barcode}</p>
     <p id="jaula__cageName">Cage Name: ${cageName}</p>
     </section>
     <section id="cardRow" class="card__row">
-    ${tipo === `parental` ? `<p id="jaula__tipo">Tipo: Parental</p>` :` <p id="jaula__tipo">Tipo: Pups</p>`}
+    ${tipo === `parental` ? `<p id="jaula__tipo">Tipo: Parental</p>` : ` <p id="jaula__tipo">Tipo: Pups</p>`}
     <p id="jaula__fecha">Fecha: ${date}</p>
     </section>
     <section id="cardRow" class="card__row light__grey">
@@ -43,11 +44,11 @@ const muestraJaulas = (element) => {
     ${pups[0] !== false ? `<p id="jaula__">Pups: ${pups.length}</p>` : `<p id="jaula__">Pups: 0</p>`}
     </section></div>
     `
-        mainContainer.append(div)
-        div.addEventListener(`click`, () => {
-            muestraRatones(`barcode`, jaula.barcode)
-
-        })
+            mainContainer.append(div)
+            div.addEventListener(`click`, () => {
+                muestraRatones(`barcode`, jaula.barcode)
+            })
+        }
     });
 };
 

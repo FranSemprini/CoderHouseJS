@@ -1,7 +1,10 @@
-// let jaulas = JSON.parse(localStorage.getItem(`jaulas`)) || []
+let jaulas = []
 
-let idRaton = 40
-let idJaula = 40
+let idJaula = 1
+let idRaton = 1
+getFromFirebase()
+
+
 let selectJaula = document.querySelector(`#selectJaula`)
 let selectRaton = document.querySelector(`#selectRaton`)
 let selectParental = document.querySelector(`#selectParental`)
@@ -87,12 +90,16 @@ const fechaToArray = (fecha) => {
 
 // FUNCIONES DE BUSQUEDA y FILTROS //
 
+const soloJaulas = () => {
+    return jaulas.filter(e => Object.keys(e).length > 2)
+}
+
 const buscaJaula = (barcode) => {
     return jaulas.find(e => e.barcode === barcode)
 }
 
 const busquedaR = (jaula, dato, datoABusacar, aFiltrarR) => {
-    jaulas.filter(e => {
+    soloJaulas(jaulas).filter(e => {
         let encontrados = e[jaula].filter(e => e[datoABusacar] == dato)
         encontrados.length > 0 && aFiltrarR.push(encontrados)
     })
@@ -119,6 +126,7 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
         busquedaR(`parents`, dato, `actualBarcode`, aFiltrarR)
         busquedaR(`pups`, dato, `actualBarcode`, aFiltrarR)
         filtrados = aFiltrarR[0]
+
         return filtrados
     } else if (datoABusacar === `previousBarcode`) {
         let filtrados = []

@@ -69,9 +69,10 @@ const creaJaula = () => {
         let barcodeJaula = barcode.value
         jaulas.push(new Jaula(idJaula, tipoJula, dateJaula, barcodeJaula, nombreJaula))
         limpiaHoja(0)
-        idJaula++
         if (buscaJaula(barcodeJaula).barcode == barcodeJaula && barcodeJaula !== "") {
             toastify(`La jaula con el codigo ${barcodeJaula} se creo correctamente.`, "linear-gradient(to right, #00b09b, #96c93d)")
+            jaulas[0].idJaula++
+            pushAlltoFB()
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -180,10 +181,11 @@ const creaParental = () => {
         let genderRaron = gender.value
         clearFalse(barcodeRaton, `parents`)
         let parentsBefore = buscaJaula(barcodeRaton).parents.length
-        buscaJaula(barcodeRaton).parents.push(new Raton(idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
-        idRaton++
+        jaulas[0].idRaton++
+        buscaJaula(barcodeRaton).parents.push(new Raton(jaulas[0].idRaton, `parent`, genRaton, dateRaton, genderRaron, `none`, barcodeRaton, `none`))
         if (buscaJaula(barcodeRaton).parents.length === parentsBefore + 1) {
             toastify(`El raton parental se añadio a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)")
+            pushAlltoFB()
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -248,13 +250,14 @@ const creaNoParental = () => {
         clearFalse(barcodeRaton, `pups`)
         let pupsBefore = buscaJaula(barcodeRaton).pups.length
         for (i = 0; i < criasRaton; i++) {
-            buscaJaula(barcodeRaton).pups.push(new Raton(idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
+            buscaJaula(barcodeRaton).pups.push(new Raton(jaulas[0].idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
             buscaJaula(barcodeRaton).pups[i].previousBarcode[0] === false && buscaJaula(barcodeRaton).pups[i].previousBarcode.splice(0,1)
             buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
-            idRaton++
+            jaulas[0].idRaton++
         }
         if (buscaJaula(barcodeRaton).pups.length > pupsBefore) {
             criasRaton > 1 ? toastify(`${criasRaton} pups se añadieron a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)") : toastify(`${criasRaton} pup se añadio a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)")
+            pushAlltoFB()
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -489,6 +492,7 @@ const creaFormularioMoverRaton = () => {
         mainContainer.innerHTML = ''
         if (buscaJaula(jaulaAnteriorValue).pups.length  === pupsBefore - 1 && buscaJaula(jaulaNuevaValue).parents.length === parentsBefore + 1) {
             toastify(`El raton con codigo ${buscaOrejaRaton} se movio como padre a la jaula parental ${jaulaNuevaValue}`, "linear-gradient(to right, #00b09b, #96c93d)") 
+            pushAlltoFB()
         } else {
             toastify(` asdasd `, "linear-gradient(to right, #00b09b, #96c93d)")
         }
