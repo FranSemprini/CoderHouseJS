@@ -131,20 +131,26 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
     } else if (datoABusacar === `previousBarcode`) {
         let filtrados = []
         for (let i = 0; i < jaulas.length; i++) {
-            jaulas[i].parents.forEach(element => {
-                element.previousBarcode.forEach(element2 => {
-                    if (dato === element2) {
-                        filtrados.push(element)
+            if (Object.keys(jaulas[i]).length > 2) {
+                jaulas[i].parents.forEach(element => {
+                    if (element) {
+                        element.previousBarcode.forEach(element2 => {
+                            if (dato === element2) {
+                                filtrados.push(element)
+                            }
+                        });
                     }
-                });
-            })
-            jaulas[i].pups.forEach(element => {
-                element.previousBarcode.forEach(element2 => {
-                    if (dato === element2) {
-                        filtrados.push(element)
+                })
+                jaulas[i].pups.forEach(element => {
+                    if (element) {
+                        element.previousBarcode.forEach(element2 => {
+                            if (dato === element2) {
+                                filtrados.push(element)
+                            }
+                        });
                     }
-                });
-            })
+                })
+            }
         }
         return filtrados
     } else if (datoABusacar === `gen`) {
@@ -153,20 +159,24 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
         tipo = tipo
         const filtraGenes = (tipo) => {
             for (let i = 0; i < jaulas.length; i++) {
-                jaulas[i][tipo].forEach(element => {
-                    coincidencias = 0
-                    let validaCantidad = []
-                    for (let i = 0; i < element.gen.length; i++) {
-                        if (dato[i] === element.gen[i] || dato[i] === `any`) {
-                            validaCantidad.push(dato[i])
-                            coincidencias++
+                if (jaulas[i].tipo) {
+                    jaulas[i][tipo].forEach(element => {
+                        coincidencias = 0
+                        let validaCantidad = []
+                        if (element.tipo) {
+                            for (let i = 0; i < element.gen.length; i++) {
+                                if (dato[i] === element.gen[i] || dato[i] === `any`) {
+                                    validaCantidad.push(dato[i])
+                                    coincidencias++
+                                }
+                            }
                         }
-                    }
-                    let ratonAFiltrar = element.idRaton
-                    if (validaCantidad.length === 4) {
-                        aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
-                    }
-                })
+                        let ratonAFiltrar = element.idRaton
+                        if (validaCantidad.length === 4) {
+                            aFiltrarR.push({ id: ratonAFiltrar, coincidencias: coincidencias })
+                        }
+                    })
+                }
             }
         }
         filtraGenes(tipo)
@@ -182,7 +192,7 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
 // FUNCIONES LOGICAS DE ASIGNACION Y DE COMPROBACION 
 
 const clearFalse = (jaula, e) => {
-        buscaJaula(jaula)[e][0] === false && buscaJaula(jaula)[e].splice(0,1)
+    buscaJaula(jaula)[e][0] === false && buscaJaula(jaula)[e].splice(0, 1)
 }
 
 const asignEarCode = (element) => {
@@ -247,23 +257,23 @@ const calculaGenes2 = (barcodePadresRaton) => {
 const asignGen = () => {
     let toCheck = buscaJaula(barcodeCheck.value)
     let toDisable = document.querySelectorAll(`.toDisable`)
-            if (toCheck) {
-                if (toCheck.parents[0] !== false) {
-                    let genAF = document.querySelector('#genA')
-                    let genBF = document.querySelector('#genB')
-                    let gender = document.querySelector(`#gender`)
-                    genAF.value = toCheck.parents[0].gen[0]
-                    genBF.value = toCheck.parents[0].gen[2]
-                    toCheck.parents[0].gender === `male` ? gender.value = 'female': `male`
-                    toDisable.forEach(element => {
-                        element.setAttribute(`disabled`, "")
-                    });
-                } else {
-                    toDisable.forEach(element => {
-                        element.removeAttribute(`disabled`, "")
-                    });
-                }
-            }
+    if (toCheck) {
+        if (toCheck.parents[0] !== false) {
+            let genAF = document.querySelector('#genA')
+            let genBF = document.querySelector('#genB')
+            let gender = document.querySelector(`#gender`)
+            genAF.value = toCheck.parents[0].gen[0]
+            genBF.value = toCheck.parents[0].gen[2]
+            toCheck.parents[0].gender === `male` ? gender.value = 'female' : `male`
+            toDisable.forEach(element => {
+                element.setAttribute(`disabled`, "")
+            });
+        } else {
+            toDisable.forEach(element => {
+                element.removeAttribute(`disabled`, "")
+            });
+        }
+    }
 
 }
 
@@ -271,7 +281,7 @@ const creOptVacias = (tipo, id, barcode) => {
     let aMostrar = tipo === `` ? buscaJaula(barcode).pups : buscaJaulasVacias(tipo)
     let sel = document.querySelector(id)
     let fragment = document.createDocumentFragment()
-    if (sel.length < 1 ) {
+    if (sel.length < 1) {
         aMostrar.forEach(element => {
             let opt = document.createElement(`option`)
             opt.innerHTML = tipo === `` ? element.earCode : element.barcode
@@ -307,7 +317,7 @@ const formValidation = (data, validacion) => {
         aValidar.forEach(e => e.addEventListener(`change`, () => {
             let jaula = buscaJaula(sel.value)
             if (jaula) {
-                buscaJaula(sel.value).pups.length >= 1? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
+                buscaJaula(sel.value).pups.length >= 1 ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
             } else {
                 bsub.classList.add(`disabled`)
             }

@@ -250,10 +250,10 @@ const creaNoParental = () => {
         clearFalse(barcodeRaton, `pups`)
         let pupsBefore = buscaJaula(barcodeRaton).pups.length
         for (i = 0; i < criasRaton; i++) {
+            jaulas[0].idRaton++
             buscaJaula(barcodeRaton).pups.push(new Raton(jaulas[0].idRaton, `pup`, gen, dateRaton, genderRaron, asignEarCode(i), barcodeRaton,))
             buscaJaula(barcodeRaton).pups[i].previousBarcode[0] === false && buscaJaula(barcodeRaton).pups[i].previousBarcode.splice(0,1)
             buscaJaula(barcodeRaton).pups[i].previousBarcode.push(barcodePadresRaton)
-            jaulas[0].idRaton++
         }
         if (buscaJaula(barcodeRaton).pups.length > pupsBefore) {
             criasRaton > 1 ? toastify(`${criasRaton} pups se añadieron a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)") : toastify(`${criasRaton} pup se añadio a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)")
