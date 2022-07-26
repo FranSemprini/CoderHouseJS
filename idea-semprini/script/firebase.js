@@ -29,21 +29,6 @@ const getFromFirebase = () => {
   });
 }
 
-// const getLastChild = () => {
-//   toReturn = ``
-//   firebase
-//     .database()
-//     .ref()
-//     .limitToLast(1).on(`value`, (snapshot) => {
-//       let data = snapshot.val()
-//       for (const key in data) {
-//         idJaula = Number(key)
-//         toReturn = Number(key)
-//       }
-//     })
-//     return toReturn
-// }
-
 const pushIdsToFB = (idJaula, idRaton) => {
   firebase
     .database()

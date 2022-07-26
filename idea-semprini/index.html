@@ -9,6 +9,7 @@
     <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script defer src="script/firebase.js"></script>
     <script defer src="script/formularios.js"></script>
+    <script defer src="script/styles.js"></script>
     <script defer src="script/qr.js"></script>
     <script defer src="script/renderizado.js"></script>
     <script defer src="script/script.js"></script>
@@ -23,25 +24,26 @@
 </head>
 
 <body>
-    <header class="header">
-        <div id='titulo'>
-            <a href="javascript:void(0)">
-                <h1>IDEA SEMPRINI</h1>
-            </a>
-        </div>
-        <nav class="header__nav">
-            <ul class="d-flex flex-wrap justify-content-around header__ul">
-                <li><a id="ingresaDatos" class="p-1" href="javascript:void(0)">Ingresa Datos</a></li>
-                <li><a id="visualizaDatos" class="p-1" href="javascript:void(0)">Visualiza Datos</a></li>
-                <li><a id="moverRaton" class="p-1" href="javascript:void(0)">Mover Raton</a></li>
+    <div id='titulo' class="header d-flex justify-content-evenly">
+        <a href="javascript:void(0)">
+            <h1>IDEA SEMPRINI</h1>
+        </a>
+        <img class="mouse" src="img/mice.gif" alt="Mice">
+    </div>
+    <header class="header d-flex">
+        <nav class="header__nav w-100">
+            <ul class="d-flex flex-column align-content-start align-items-start header__ul">
+                <li><a id="ingresaDatos" class="p-1 opt1 opt unselected" href="javascript:void(0)">Ingresa Datos</a></li>
+                <li><a id="visualizaDatos" class="p-1 opt2 opt unselected" href="javascript:void(0)">Visualiza Datos</a></li>
+                <li><a id="moverRaton" class="p-1 opt3 opt unselected" href="javascript:void(0)">Mover Raton</a></li>
             </ul>
         </nav>
+        <div id="formSelect" class="selectForm d-flex justify-content-center align-items-center w-50"></div>
     </header>
-    <main>
-        <div id="formSelect" class="selectForm"></div>
+    <main class="main">
         <div id="formSelect2" class="selectForm2"></div>
-        <div id="formSelect3" class=""></div>
-        <div id="mainContainer"></div>
+        <div id="formSelect3" class="formSelect3"></div>
+        <div id="mainContainer" class="mainContainer"></div>
     </main>
 
     <div class="containeQr invisible">

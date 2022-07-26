@@ -1,10 +1,11 @@
 const muestraRatones = (datoABusacar, dato, tipo) => {
     mainContainer.innerHTML = ``
     filtrados = filtaRatones(datoABusacar, dato, tipo)
-    filtrados.reverse().forEach(raton => {
-        const { tipo, actualBarcode, previousBarcode, birth, earCode, gen, gender } = raton
-        const div = document.createElement(`div`)
-        div.innerHTML = ` <div id=card class="card blue__border">
+    if (filtrados !== undefined) {
+        filtrados.reverse().forEach(raton => {
+            const { tipo, actualBarcode, previousBarcode, birth, earCode, gen, gender } = raton
+            const div = document.createElement(`div`)
+            div.innerHTML = ` <div id=card class="card blue__border">
         <h1 class="card__title">RATON - ${tipo.toUpperCase()}</h1>
         <section id="cardRow" class="card__row light__grey">
         <p id="raton__previousBarcode">Barcode: ${actualBarcode}</p>
@@ -19,8 +20,9 @@ const muestraRatones = (datoABusacar, dato, tipo) => {
         <p id="raton__gender">Gender: ${gender}</p>
         </section></div>
         `
-        mainContainer.append(div)
-    })
+            mainContainer.append(div)
+        })
+    }
 }
 
 const muestraJaulas = (element) => {

@@ -41,6 +41,7 @@ class Raton {
 const limpiar = () => {
     limpiaHoja(0, 1, 2, 3)
     cerrarCamara()
+    restoreSelected()
 }
 
 const limpiaHoja = (...options) => {
@@ -192,7 +193,8 @@ const filtaRatones = (datoABusacar, dato, tipo) => {
 // FUNCIONES LOGICAS DE ASIGNACION Y DE COMPROBACION 
 
 const clearFalse = (jaula, e) => {
-    buscaJaula(jaula)[e][0] === false && buscaJaula(jaula)[e].splice(0, 1)
+
+    buscaJaula(jaula)[e] != undefined && buscaJaula(jaula)[e][0] === false && buscaJaula(jaula)[e].splice(0, 1)
 }
 
 const asignEarCode = (element) => {
@@ -300,8 +302,11 @@ const formValidation = (data, validacion) => {
             let jaula = buscaJaula(sel.value)
             jaula === undefined ? bsub.classList.remove(`disabled`) : bsub.classList.add(`disabled`)
         })
+    } else if (validacion === `parental`) {
+        let aValidar = document.querySelector(`.aValidar`)
+        aValidar.value !== "" && bsub.classList.remove(`disabled`)
     }
-    if (validacion === `noparental`) {
+    else if (validacion === `noparental`) {
         let aValidar = document.querySelectorAll(`.aValidar`)
         aValidar.forEach(e => e.addEventListener(`change`, () => {
             let jaula = buscaJaula(sel.value)
@@ -312,7 +317,7 @@ const formValidation = (data, validacion) => {
             }
         }))
     }
-    if (validacion === `mover`) {
+    else if (validacion === `mover`) {
         let aValidar = document.querySelectorAll(`.aValidar`)
         aValidar.forEach(e => e.addEventListener(`change`, () => {
             let jaula = buscaJaula(sel.value)

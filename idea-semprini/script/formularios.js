@@ -11,19 +11,22 @@ const formSelect3 = document.querySelector(`#formSelect3`)
 
 const creaFormularioIngreso = () => {
     limpiaHoja(0, 1, 2, 3)
+    selected(`.opt1`)
     const div = document.createElement('div')
-    div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
-    <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>
-    <li><a id="selectRaton" href="javascript:void(0)">Raton</a></li>
+    div.innerHTML = `<ul class="d-flex d-flex flex-column form__ul animateMenu">
+    <li><a id="selectJaula" class="selectJaula sub1" href="javascript:void(0)">Jaula</a></li>
+    <li><a id="selectRaton" class="sub2" href="javascript:void(0)">Raton</a></li>
 </ul>`
     formSelect.append(div)
     selectJaula = document.querySelector(`#selectJaula`);
     selectRaton = document.querySelector(`#selectRaton`);
     selectJaula.addEventListener(`click`, (e) => {
         creaJaula()
+        subSelected(selectJaula, selectRaton)
     })
     selectRaton.addEventListener(`click`, (e) => {
         creaRaton()
+        subSelected(selectRaton, selectJaula)
     })
 }
 
@@ -32,7 +35,7 @@ const creaFormularioIngreso = () => {
 const creaJaula = () => {
     const div = document.createElement('div')
     limpiaHoja(0, 2, 3)
-    div.innerHTML = `    <form id="myForm" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `    <form id="myForm" action="" class="myForm pt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
         <select class="form-select" aria-label="" id="tipo">
             <option value="parental">Parents</option>
@@ -73,6 +76,7 @@ const creaJaula = () => {
             toastify(`La jaula con el codigo ${barcodeJaula} se creo correctamente.`, "linear-gradient(to right, #00b09b, #96c93d)")
             jaulas[0].idJaula++
             pushAlltoFB()
+            subSelected(selectJaula, selectJaula)
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -84,7 +88,7 @@ const creaJaula = () => {
 const creaRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0, 3)
-    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3">
+    div.innerHTML = `<form id="myForm" action="" class="myForm pt-3">
     <div class="d-flex flex-row">
         <select class="form-select mx-2" aria-label="" id="aBuscar">
             <option value="">Raton a crear</option>
@@ -109,11 +113,11 @@ const creaParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
     limpiaHoja(0)
-    div.innerHTML = `    <form id="myForm2" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `    <form id="myForm2" action="" class="myForm pt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
         <div class="d-flex w-100 align-items-center gap-1">
             <label for="barcode">Barcode</label>
-            <select class="form-select" aria-label="barcode" id="barcode2"></select>
+            <select class="form-select aValidar" aria-label="barcode" id="barcode2"></select>
         </div>
         <div class="d-flex w-100 align-items-center gap-1">
         <select class="form-select toDisable" aria-label="" id="gender">
@@ -162,7 +166,7 @@ const creaParental = () => {
         <input id="date" class="form-control" type="date" />
     </div>
     <div class="d-flex w-100 justify-content-center">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button id="bsubmit" type="submit" class="btn btn-primary disabled">Submit</button>
     </div>
 </form>`
     mainContainer.append(div)
@@ -186,6 +190,7 @@ const creaParental = () => {
         if (buscaJaula(barcodeRaton).parents.length === parentsBefore + 1) {
             toastify(`El raton parental se añadio a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)")
             pushAlltoFB()
+            subSelected(selectRaton, selectRaton)
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -197,7 +202,7 @@ const creaNoParental = () => {
     const div = document.createElement(`div`)
     tipoRatonValue = ``
     limpiaHoja(0)
-    div.innerHTML = `    <form id="myForm2" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `    <form id="myForm2" action="" class="myForm pt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
         <div class="d-flex w-100 align-items-center gap-1">
             <label for="barcode">Barcode</label>
@@ -232,7 +237,7 @@ const creaNoParental = () => {
         <input id="date" class="form-control" type="date" />
     </div>
     <div class="d-flex w-100 justify-content-center">
-        <button id="bsubmit" type="submit" class="btn btn-primary mt-3 disabled">Submit</button>
+        <button id="bsubmit" type="submit" class="btn btn-primary disabled">Submit</button>
     </div>
 </form>`
     mainContainer.append(div)
@@ -258,6 +263,7 @@ const creaNoParental = () => {
         if (buscaJaula(barcodeRaton).pups.length > pupsBefore) {
             criasRaton > 1 ? toastify(`${criasRaton} pups se añadieron a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)") : toastify(`${criasRaton} pup se añadio a la jaula ${barcodeRaton}`, "linear-gradient(to right, #00b09b, #96c93d)")
             pushAlltoFB()
+            subSelected(selectRaton, selectRaton)
         } else {
             toastify("No se pudo crear la jaula, revisa los datos.", "")
         }
@@ -269,8 +275,9 @@ const creaNoParental = () => {
 
 const creaFormularioBusqueda = () => {
     limpiaHoja(0, 1, 2, 3)
+    selected(`.opt2`)
     const div = document.createElement('div')
-    div.innerHTML = `<ul class="d-flex justify-content-around form__ul">
+    div.innerHTML = `<ul class="d-flex flex-column form__ul animateMenu">
     <li><a id="selectJaula" class="selectJaula" href="javascript:void(0)">Jaula</a></li>
     <li><a id="selectRaton" href="javascript:void(0)">Raton</a></li>
 </ul>`
@@ -279,16 +286,18 @@ const creaFormularioBusqueda = () => {
     selectRaton = document.querySelector(`#selectRaton`);
     selectJaula.addEventListener(`click`, (e) => {
         searchJaula()
+        subSelected(selectJaula, selectRaton)
     })
     selectRaton.addEventListener(`click`, (e) => {
         searchRaton()
+        subSelected(selectRaton, selectJaula)
     })
 }
 
 const searchRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0, 3)
-    div.innerHTML = `<form id="myForm" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `<form id="myForm" action="" class="myForm pt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
         <select class="form-select" aria-label="" id="aBuscar">
             <option value="">Valor a Buscar</option>
@@ -314,14 +323,14 @@ const buscarBarcodeAnteriorRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0)
     div.innerHTML = `
-    <form id="myForm2" action="" class="myForm mt-3 gap-3">
+    <form id="myForm2" action="" class="myForm pt-3 gap-3">
         <div class="d-flex flex-row gap-3">
             <div class="d-flex w-100">
                     <input type="number" class="form-control barcodeToBeScanned" placeholder="Barcode" id="data">
                     <a class="camIcon" id="camButton"><i class="fa fa-camera fa-xl" aria-hidden="true"></i></a>
                 </div>
             </div>
-        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        <button type="submit" class="btn btn-primary pt-3">Submit</button>
     </form>
 `
     mainContainer.append(div)
@@ -336,7 +345,7 @@ const buscarBarcodeAnteriorRaton = () => {
 const buscaGenesRaton = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0)
-    div.innerHTML = `    <form id="myForm2" action="" class="myForm mt-3 gap-3">
+    div.innerHTML = `    <form id="myForm2" action="" class="myForm pt-3 gap-3">
     <div class="d-flex flex-row align-items-center gap-3">
         <select class="form-select" aria-label="" id="tipo">
             <option value="parents">Parent</option>
@@ -399,7 +408,7 @@ const searchJaula = () => {
     const div = document.createElement(`div`)
     limpiaHoja(0, 3)
     div.innerHTML = `
-    <form id="myForm" action="" class="myForm mt-3 gap-3">
+    <form id="myForm" action="" class="myForm pt-3 gap-3">
         <div class="d-flex flex-row gap-3">
             <div class="d-flex w-50 align-items-center gap-1">
                 <select class="form-select" aria-label="" id="tipo">
@@ -445,9 +454,10 @@ const searchJaula = () => {
 
 const creaFormularioMoverRaton = () => {
     const div = document.createElement(`div`)
+    selected(`.opt3`)
     limpiaHoja(0, 1, 2, 3)
     div.innerHTML = `
-    <form id="myForm" action="" class="myForm mt-3 gap-3">
+    <form id="myForm" action="" class="myForm pt-3 gap-3">
         <div class="d-flex flex-row align-items-center gap-3">
             <div class="d-flex w-50 align-items-center gap-1">
                 <input type="number" class="form-control aValidar barcodeToBeScanned" placeholder=" Jaula Anterior"

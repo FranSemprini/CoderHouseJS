@@ -1,6 +1,19 @@
 * {
-    margin: 0px;
     padding: 0;
+    margin: 0;
+}
+
+html, body {
+    background-color: #355070 !important;
+}
+
+@for $i from 1 through 6 {
+    h#{$i} {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        font-weight: 500 !important;
+        line-height: 1.2 !important;
+    }
 }
 
 ul {
@@ -14,9 +27,14 @@ ul {
     color: #BCC4DB;
 }
 
-#titulo > a {
-        text-decoration: none;
-        color: inherit;
+.mouse {
+    width: 20%;
+    height: auto;
+}
+
+#titulo>a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .header__nav {
@@ -28,42 +46,130 @@ ul {
     list-style: none;
     text-transform: uppercase;
     color: #EB8258;
+    margin-left: 10px;
 
     &>a {
         text-decoration: none;
         color: inherit;
-
-        &:hover {
-            color: #6BBAEC;
-        }
     }
 }
 
 .selectForm {
-    background-color: #ccaee1;
+    background: linear-gradient(90deg, rgba(109, 89, 122, 1) 0%, rgba(178, 151, 197, 1) 23%, rgba(204, 174, 225, 1) 100%);
     font-size: 20px;
 }
 
 .selectForm2 {
-    background-color: #e5d4f2;
+    background-color: #355070;
     font-size: 18px;
+}
+
+.formSelect3 {
+    background-color: #355070;
+    color: #BCC4DB;
+}
+
+.bColorDBlue {
+    background-color: #355070;
+}
+
+.mainContainer {
+    background-color: #355070;
+    color: #BCC4DB;
+    height: 100vh;
 }
 
 .form__ul>li {
     list-style: none;
     text-transform: uppercase;
-    color: black;
+    color: #355070;
+    margin-top: 5px;
+    margin-bottom: 5px;
 
     &>a {
         text-decoration: none;
         color: inherit;
         font-weight: bold;
-
-        &:hover {
-            color: #0895ed;
-        }
     }
 }
+
+.selected {
+    margin-left: 20px;
+    transition: margin 1s;
+}
+
+.unselected {
+    margin-left: 0px;
+    transition: margin 1s;
+}
+
+
+.disabled {
+    background-color: red !important;
+    position: relative;
+}
+
+.disabled:after {
+    content: "Revisa los valores ingresados";
+    position: absolute;
+    width: 130px;
+    height: 50px;
+    top: 60px;
+    left: 20px;
+    background: red;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
+
+  .disabled:before {
+    content: "";
+    position: absolute;
+    left: 30%;
+    top: 45px;
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-right: 20px solid red;
+    border-bottom: 13px solid transparent;
+  }
+
+
+#selectJaula,
+#selectRaton {
+    position: relative;
+}
+
+.subMenu:before {
+    content: "";
+    background: #EB8258;
+    position: absolute;
+    width: 100%;
+    height: 1%;
+    bottom: 0;
+    left: 0;
+    border-radius: 5px;
+    transform: scaleX(0);
+    animation: 0.1s forwards hover-v linear;
+    animation-fill-mode: forwards;
+    z-index: -1;
+  }
+
+  @keyframes hover-v {
+    0% {
+        transform: scaleX(0);
+        height: 5px;
+       }
+    45% {   
+        transform: scaleX(1.05);
+        height: 5px;
+       }
+    55% {height: 5px;}
+    100% {
+        transform: scaleX(1.05);
+        height: 25px;
+       }
+  }
 
 .card {
     display: flex;
@@ -71,7 +177,8 @@ ul {
     background-color: rgb(220, 220, 220);
     justify-content: center;
     align-items: center;
-    margin: 10px
+    margin: 10px;
+    color: black;
 }
 
 .card__title {
@@ -112,15 +219,12 @@ ul {
     margin: 0 5px 0 5px;
 }
 
-
-
 .myForm {
     margin: 0 20px 0 20px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
-
 
 .containeQr {
     flex-direction: row,  !important;
@@ -156,4 +260,21 @@ ul {
 
 .visible {
     display: block;
+}
+
+.animateMenu {
+    animation: focus-in-expand 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes focus-in-expand {
+    0% {
+        letter-spacing: -0.5em;
+        filter: blur(12px);
+        opacity: 0;
+    }
+
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+    }
 }
