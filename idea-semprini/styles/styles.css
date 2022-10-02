@@ -139,31 +139,6 @@ ul {
   position: relative;
 }
 
-.disabled:after {
-  content: "Revisa los valores ingresados";
-  position: absolute;
-  width: 130px;
-  height: 50px;
-  top: 60px;
-  left: 20px;
-  background: red;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-}
-
-.disabled:before {
-  content: "";
-  position: absolute;
-  left: 30%;
-  top: 45px;
-  width: 0;
-  height: 0;
-  border-top: 20px solid transparent;
-  border-right: 20px solid red;
-  border-bottom: 13px solid transparent;
-}
-
 #selectJaula,
 #selectRaton {
   position: relative;
